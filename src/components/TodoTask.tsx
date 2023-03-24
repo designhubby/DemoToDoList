@@ -1,17 +1,19 @@
 import React, {FC, ReactComponentElement} from 'react';
+import { ITask } from '../Interfaces';
 
-export interface ITodoTaskProps {
-    deadline: number,
-    todoName: string,
+export interface Props{
+  task: ITask,
+  removeTask: (key:string)=>void,
 }
 
-const TodoTask:FC<ITodoTaskProps> = ({deadline, todoName}: ITodoTaskProps) => {
+const TodoTask:FC<Props> = ({task, removeTask}: Props) => {
   return (
-    <div>
-      <tr>
-        <td>{todoName}</td>
-        <td>{deadline}</td>
-      </tr>
+    <div className='task'>
+      <div className='content'>
+        <span>Name: {task.taskName}</span>
+        <span>Deadline: {task.deadline}</span>
+      </div>
+      <button onClick={()=>removeTask(task.taskName)}>X</button>
     </div>
   );
 }

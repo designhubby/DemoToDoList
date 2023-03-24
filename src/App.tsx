@@ -4,7 +4,7 @@ import './App.scss';
 import { HairColor, Person } from './components/Person';
 
 import { ITask } from './Interfaces';
-import TodoTask from './components/TodoTask';
+import TodoTask, {Props} from './components/TodoTask';
 
 type tReactChgEvent = React.ChangeEvent<HTMLInputElement>;
 type tHandleChg = (e : tReactChgEvent)=>void;
@@ -40,11 +40,16 @@ const App: FC = ()=> {
     setDeadline(0)
   }
 
-  const renderToDoList = () =>{
-    return <>
-    {todoList.map(indiv=> <TodoTask todoName={indiv.taskName} deadline={indiv.deadline}/>)}
-    </>
+  const removeTask = (taskKey:string) :void=>{
+    const newTodoList = todoList.filter((indiv)=>indiv.taskName != taskKey);
+    setTodoList(newTodoList);
   }
+
+  const renderToDoList = (): JSX.Element =>(
+    <>
+    {todoList.map((indiv: ITask, key:number) => <TodoTask key={key} task={indiv} removeTask={removeTask}/>)}
+    </>
+  )
 
   return (
     <div className="App">
@@ -57,7 +62,9 @@ const App: FC = ()=> {
         <button onClick={addTask}> Add Task</button>
       </div>
       <div className = "todoList">
+        
         {renderToDoList()}
+
       </div>
     </div>
   );
