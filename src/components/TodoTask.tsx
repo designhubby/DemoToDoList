@@ -10,10 +10,10 @@ const TodoTask:FC<Props> = ({task, removeTask}: Props) => {
   return (
     <div className='task'>
       <div className='content'>
-        <span>Name: {task.taskName}</span>
-        <span>Deadline: {task.deadline}</span>
+        <div>Name: {task.taskName}</div>
+        <div>Deadline: {task.deadline}</div>
       </div>
-      <button onClick={()=>removeTask(task.taskName)}>X</button>
+      <button onClick={()=>removeTask(task.taskName || "")}>X</button>
     </div>
   );
 }
