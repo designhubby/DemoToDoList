@@ -15,18 +15,19 @@ const App: FC = ()=> {
 
   const [task,setTask] = useState<string | Date | null>("");
   const [deadline,setDeadline] = useState<number>(0);
-  const [todoList,setTodoList] = useState<ITask[]>([]);
-  const [startDate, setStartDate] = useState(new Date());
-  const [priorityCurrentLvl,setPriorityCurrentLvl ] = useState<taskPriorityLevel>();
-
-  const [currAllTaskInfo, setCurrAllTaskInfo] = useState<ITaskInfoAll>( {
+  const [todoList,setTodoList] = useState<ITaskInfoAll[]>([]);
+  const [priorityCurrentLvl,setPriorityCurrentLvl ] = useState<taskPriorityLevel>(taskPriorityLevel.Low);
+  
+  const blanktask : ITaskInfoAll = {
     id: Date.now(),
     taskName : null,
     deadline : null,
     startDate :null,
-    prioritylvl : null,
-  });
+    prioritylvl : taskPriorityLevel.Low,
+  }
+  const [currAllTaskInfo, setCurrAllTaskInfo] = useState<ITaskInfoAll>( blanktask);
  
+
 
 
   let demoobj : ITaskInfoAll = {
@@ -73,24 +74,25 @@ const App: FC = ()=> {
 
 
   const addTask= () : void =>{
-    const newTask :ITask = {
+    const newTask :ITaskInfoAll = {
+      id: Date.now(),
       taskName : currAllTaskInfo.taskName,
       deadline: currAllTaskInfo.deadline,
+      startDate : currAllTaskInfo.startDate,
+      prioritylvl : currAllTaskInfo.prioritylvl,
     }
-    setTodoList([...todoList,newTask ])
-    console.log(todoList)
-    setTask("")
-    setDeadline(0)
+    setTodoList((prev)=>[...prev,newTask ])
+    setCurrAllTaskInfo(blanktask);
   }
 
-  const removeTask = (taskKey:string) :void=>{
-    const newTodoList = todoList.filter((indiv)=>indiv.taskName != taskKey);
+  const removeTask = (id:number) :void=>{
+    const newTodoList = todoList.filter((indiv)=>indiv.id !== id);
     setTodoList(newTodoList);
   }
 
   const renderToDoList = (): JSX.Element =>(
     <>
-    {todoList.map((indiv: ITask, key:number) => <TodoTask key={key} task={indiv} removeTask={removeTask}/>)}
+    {todoList.map((indiv: ITaskInfoAll, key:number) => <TodoTask key={key} task={indiv} removeTask={removeTask}/>)}
     </>
   )
 

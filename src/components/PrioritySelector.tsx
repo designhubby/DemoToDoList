@@ -23,9 +23,9 @@ export const PrioritySelector: FC<IPrioritySelectorProps<string, string>> = ({
     
 
     const allPrioritySelectOptions = () =>{
-      return (Object.keys(enumVariable) as Array<prioritylvls>).map((indiv)=>{
+      return (Object.keys(enumVariable) as Array<prioritylvls>).map((indiv, i)=>{
         console.log(indiv);
-        return <option value = {indiv}>{indiv}</option>
+        return <option key = {i} value = {indiv}>{indiv}</option>
       })
     }
   return (
