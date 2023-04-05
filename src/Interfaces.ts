@@ -24,3 +24,14 @@ export interface IDatePickerObj{
   value: Date | null,
   }
 }
+
+export type tReactChgEvent = React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement> | IDatePickerObj;
+
+export   enum InputFieldName{
+  id = "id",
+  taskName ="taskName",
+  deadline = "deadline",
+  startDate= "startDate",
+  prioritylvl = "prioritylvl",
+
+}

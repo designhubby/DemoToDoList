@@ -1,10 +1,11 @@
-import React, {FC} from 'react';
+import React, {FC, PropsWithChildren} from 'react';
 
-interface IPrioritySelectorProps<T extends string, TEnumValue extends string> {
+
+interface IPrioritySelectorProps<T , TEnumValue > {
     handleChange: (e: React.ChangeEvent<HTMLSelectElement>)=>void;
     currentValue: TEnumValue | undefined;
     name: string;
-    enumVariable: {[key in T]: TEnumValue}
+    enumVariable: {[key in keyof T]: TEnumValue}
 }
 // export enum taskPriorityLevel {
 //     High = "High", 
@@ -12,12 +13,12 @@ interface IPrioritySelectorProps<T extends string, TEnumValue extends string> {
 //     Low= "Low"
 //   }
 
-export const PrioritySelector: FC<IPrioritySelectorProps<string, string>> = ({
+export const PrioritySelector = <T,TEnumValue,> ({
     handleChange,
     currentValue,
     name,
     enumVariable,
-  }): JSX.Element => {
+  }: IPrioritySelectorProps<T , TEnumValue >): JSX.Element | null => {
     
     type prioritylvls = keyof typeof enumVariable
     

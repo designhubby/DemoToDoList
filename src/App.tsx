@@ -1,13 +1,12 @@
 import React, {FC, useState} from 'react';
 import './App.scss';
-import { IDatePickerObj, ITask, ITaskInfoAll, taskPriorityLevel } from './Interfaces';
+import { IDatePickerObj, ITask, ITaskInfoAll, taskPriorityLevel, tReactChgEvent, InputFieldName } from './Interfaces';
 import TodoTask, {Props} from './components/TodoTask';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useCallback } from 'react';
 import { PrioritySelector } from './components/PrioritySelector';
 
-type tReactChgEvent = React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement> | IDatePickerObj;
 type tHandleChg = (e : tReactChgEvent)=>void;
 
 
@@ -38,14 +37,6 @@ const App: FC = ()=> {
     prioritylvl : taskPriorityLevel.High,
   }
 
-  enum InputFieldName{
-    id = "id",
-    taskName ="taskName",
-    deadline = "deadline",
-    startDate= "startDate",
-    prioritylvl = "prioritylvl",
-
-  }
 
   const isInputFieldName = (value: string) : value is InputFieldName=>{ // type guard function
     return Object.values(InputFieldName).includes(value as InputFieldName);
@@ -115,7 +106,7 @@ const App: FC = ()=> {
             />
           <PrioritySelector  
             handleChange = {handleChangeAll}
-            currentValue = {priorityCurrentLvl}
+            currentValue = {currAllTaskInfo.prioritylvl} //priorityCurrentLvl currAllTaskInfo.prioritylvl
             name = {InputFieldName.prioritylvl}
             enumVariable ={taskPriorityLevel}/>
 
