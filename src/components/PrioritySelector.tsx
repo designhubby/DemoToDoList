@@ -1,37 +1,29 @@
 import React, {FC, PropsWithChildren} from 'react';
 
 
-interface IPrioritySelectorProps<T , TEnumValue > {
+interface IPrioritySelectorProps<T extends Record<string, string>> {
     handleChange: (e: React.ChangeEvent<HTMLSelectElement>)=>void;
-    currentValue: TEnumValue | undefined;
+    currentValue: keyof T | null
     name: string;
-    enumVariable: {[key in keyof T]: TEnumValue}
+    enumVariable:  {[K in keyof T as T[K]]: K }
 }
-// export enum taskPriorityLevel {
-//     High = "High", 
-//     Medium = "Medium",
-//     Low= "Low"
-//   }
 
-export const PrioritySelector = <T,TEnumValue,> ({
+
+export const PrioritySelector = <T extends Record<string, string>,> ({
     handleChange,
     currentValue,
     name,
     enumVariable,
-  }: IPrioritySelectorProps<T , TEnumValue >): JSX.Element | null => {
+  }: IPrioritySelectorProps<T >): JSX.Element | null => {
     
-    type prioritylvls = keyof typeof enumVariable
-    
-
     const allPrioritySelectOptions = () =>{
-      return (Object.keys(enumVariable) as Array<prioritylvls>).map((indiv, i)=>{
-        console.log(indiv);
+      return (Object.keys(enumVariable) ).map((indiv, i)=>{
         return <option key = {i} value = {indiv}>{indiv}</option>
       })
     }
   return (
     <div>
-        <select name={name} value = {currentValue} onChange={(e)=>handleChange(e )}>
+        <select name={name} value = {currentValue?.toString()} onChange={(e)=>handleChange(e )}>
             {allPrioritySelectOptions()}
         </select>
     </div>

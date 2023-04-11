@@ -5,10 +5,15 @@ export interface ITask {
 
 
 export enum taskPriorityLevel {
-    High = "High", 
-    Medium = "Medium",
-    Low= "Low"
-  }
+  High = "High", 
+  Medium = "Medium",
+  Low= "Low"
+}
+export enum Scoops {
+  ThreeScoop = "ThreeScoop", 
+  TwoScoop = "TwoScoop",
+  OneScoop= "OneScoop"
+}
 
 export interface ITaskInfoAll{
   id: number;
@@ -16,6 +21,11 @@ export interface ITaskInfoAll{
   deadline : number | null;
   startDate : Date | null;
   prioritylvl : taskPriorityLevel | null
+}
+
+export interface ITaskInfoAllExtended extends ITaskInfoAll{
+
+  extraData: string |null;
 }
 
 export interface IDatePickerObj{

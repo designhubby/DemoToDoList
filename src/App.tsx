@@ -1,21 +1,38 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import './App.scss';
-import { IDatePickerObj, ITask, ITaskInfoAll, taskPriorityLevel, tReactChgEvent, InputFieldName } from './Interfaces';
+import { IDatePickerObj, ITask, ITaskInfoAll, ITaskInfoAllExtended, taskPriorityLevel, tReactChgEvent, InputFieldName } from './Interfaces';
 import TodoTask, {Props} from './components/TodoTask';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useCallback } from 'react';
 import { PrioritySelector } from './components/PrioritySelector';
+import TaskInputForm from './components/TaskInputForm';
+import { ToDoList } from './components/ToDoList';
+import { DragDropContext, DropResult } from '@hello-pangea/dnd';
 
 type tHandleChg = (e : tReactChgEvent)=>void;
 
 
 const App: FC = ()=> {
 
-  const [task,setTask] = useState<string | Date | null>("");
-  const [deadline,setDeadline] = useState<number>(0);
-  const [todoList,setTodoList] = useState<ITaskInfoAll[]>([]);
-  const [priorityCurrentLvl,setPriorityCurrentLvl ] = useState<taskPriorityLevel>(taskPriorityLevel.Low);
+  const [todoList,setTodoList] = useState<ITaskInfoAll[]>(()=>{
+    const saved = localStorage.getItem("ToDoList");
+    let  initialValue:ITaskInfoAll[];
+    if(saved){
+      initialValue = JSON.parse(saved)
+      initialValue.forEach(indiv=>{
+        indiv.startDate = indiv.startDate ? new Date(indiv.startDate ) : null;
+      })
+      return initialValue;
+    }
+    return []
+    
+  });
+  useEffect(() => {
+    // storing input name
+    localStorage.setItem("ToDoList", JSON.stringify(todoList));
+  }, [todoList]);
+  
   
   const blanktask : ITaskInfoAll = {
     id: Date.now(),
@@ -80,44 +97,48 @@ const App: FC = ()=> {
     const newTodoList = todoList.filter((indiv)=>indiv.id !== id);
     setTodoList(newTodoList);
   }
+  const onDragEnd = (result: DropResult )=>{
+    const {source, destination, draggableId} = result;
+    console.log("-------------------------------------")
+    console.log(`draggableid: ${draggableId}`)
+    console.log(`source: ${source}`)
+    console.log(`source.droppableId  ${source.droppableId}`)
+    console.log(`destination ${destination}`)
+    console.log(`destination.droppableId ${destination?.droppableId}`)
+    console.log("-------------------------------------")
+    
+    if(!destination){
+        return;
+    }
+    const newItems = [...todoList]
+    const findIndex = todoList.findIndex(indiv=>indiv.id == parseInt(draggableId))
+    
+    newItems[findIndex].prioritylvl = destination?.droppableId as taskPriorityLevel
+    const [removed] = newItems.splice(source.index, 1);
+    newItems.splice(destination.index, 0, removed);
+    setTodoList(newItems);
 
-  const renderToDoList = (): JSX.Element =>(
-    <>
-    {todoList.map((indiv: ITaskInfoAll, key:number) => <TodoTask key={key} task={indiv} removeTask={removeTask}/>)}
-    </>
-  )
-
+}
 
   return (
     <div className="App">
       <div className='header'>
       
-        <div className = 'inputContainer'>
-          <input name ={InputFieldName.taskName}  type ="text" value={currAllTaskInfo.taskName || ""} onChange={handleChangeAll} placeholder='Task...'/>
-          <input name = {InputFieldName.deadline} type ="number" value={currAllTaskInfo.deadline || ""} onChange={handleChangeAll} placeholder = "Deadline (in Days)..."/>
-          <DatePicker
-            selected={currAllTaskInfo.startDate}
-            onChange={(date) => handleChangeAll({
-              target:{
-                name: InputFieldName.startDate,
-                value: date,
-              }
-            })}
-            />
-          <PrioritySelector  
-            handleChange = {handleChangeAll}
-            currentValue = {currAllTaskInfo.prioritylvl} //priorityCurrentLvl currAllTaskInfo.prioritylvl
-            name = {InputFieldName.prioritylvl}
-            enumVariable ={taskPriorityLevel}/>
-
-        </div>
-        <button onClick={addTask}> Add Task</button>
+        <TaskInputForm currAllTaskInfo={currAllTaskInfo} addTask={addTask} handleChangeAll = {handleChangeAll}/>
+        
+        
+      </div>
+      <DragDropContext onDragEnd={onDragEnd}>
+      <div className = "todoList">
+        <ToDoList id={"High"} ToDoListArray={todoList} removeTask={removeTask} setTodoList={setTodoList} filter = {taskPriorityLevel.High}/>
       </div>
       <div className = "todoList">
-        
-        {renderToDoList()}
-
+        <ToDoList id={"Med"} ToDoListArray={todoList} removeTask={removeTask} setTodoList={setTodoList} filter = {taskPriorityLevel.Medium}/>
       </div>
+      <div className = "todoList">
+        <ToDoList id={"Low"} ToDoListArray={todoList} removeTask={removeTask} setTodoList={setTodoList} filter = {taskPriorityLevel.Low}/>
+      </div>
+      </DragDropContext>
     </div>
   );
 }

@@ -48,12 +48,13 @@ body{
 
 .todoList{
   flex: 70%;
-  width:100%;
+  width:30%;
   display: flex;
   align-items: center;
   padding-top: 50px;
   flex-direction: column;
   background-color: lightblue;
+  border: 9px solid black;
 }
 
 .task{

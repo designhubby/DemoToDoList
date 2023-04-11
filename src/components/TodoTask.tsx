@@ -18,7 +18,7 @@ const TodoTask:FC<Props> = ({task, removeTask}: Props) => {
       <div className='content'>
         <div>Name: {task.taskName}</div>
         
-        <div>Start Date: {task.startDate?.toLocaleDateString('en-US',dateOptions)}</div>
+        <div>Start Date: {task.startDate?.toLocaleDateString('en-US',dateOptions) }</div>
         <div>Deadline: {task.deadline}</div>
         <div>Priority: {task.prioritylvl}</div>
       </div>
