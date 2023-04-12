@@ -110,6 +110,8 @@ const App: FC = ()=> {
     const newItems = [...todoList]
     const findIndexDraggable = todoList.findIndex(indiv=>indiv.id == parseInt(draggableId))
     const findIndexDroppable = todoList.findIndex(indiv=>indiv.id == destination.index)
+    console.log(`findIndexDraggable: ${findIndexDraggable}`);
+    console.log(`findIndexDroppable: ${findIndexDroppable}`);
     newItems[findIndexDraggable].prioritylvl = destination?.droppableId as taskPriorityLevel
     const [removed] = newItems.splice(findIndexDraggable, 1);
     newItems.splice(findIndexDroppable, 0, removed);
@@ -125,17 +127,19 @@ const App: FC = ()=> {
         
         
       </div>
-      <DragDropContext onDragEnd={onDragEnd}>
-      <div className = "todoList">
-        <ToDoList id={"High"} ToDoListArray={todoList} removeTask={removeTask} setTodoList={setTodoList} filter = {taskPriorityLevel.High}/>
+      <div className='allLists'>
+        <DragDropContext onDragEnd={onDragEnd}>
+          <div className = "todoList">
+            <ToDoList id={"High"} ToDoListArray={todoList} removeTask={removeTask} setTodoList={setTodoList} filter = {taskPriorityLevel.High}/>
+          </div>
+          <div className = "todoList">
+            <ToDoList id={"Med"} ToDoListArray={todoList} removeTask={removeTask} setTodoList={setTodoList} filter = {taskPriorityLevel.Medium}/>
+          </div>
+          <div className = "todoList">
+            <ToDoList id={"Low"} ToDoListArray={todoList} removeTask={removeTask} setTodoList={setTodoList} filter = {taskPriorityLevel.Low}/>
+          </div>
+        </DragDropContext>
       </div>
-      <div className = "todoList">
-        <ToDoList id={"Med"} ToDoListArray={todoList} removeTask={removeTask} setTodoList={setTodoList} filter = {taskPriorityLevel.Medium}/>
-      </div>
-      <div className = "todoList">
-        <ToDoList id={"Low"} ToDoListArray={todoList} removeTask={removeTask} setTodoList={setTodoList} filter = {taskPriorityLevel.Low}/>
-      </div>
-      </DragDropContext>
     </div>
   );
 }

@@ -38,7 +38,7 @@ body{
 
 .header button{
   width: 70px;
-  height: 87px;
+  height: 150px;
   border: none;
   border-bottom-right-radius: 8px;
   border-top-right-radius: 8px;
@@ -46,9 +46,15 @@ body{
   cursor: pointer;
 }
 
+.allLists{
+  display: flex;
+  flex: 70%;
+  flex-direction: row;
+}
 .todoList{
   flex: 70%;
   width:30%;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   padding-top: 50px;
@@ -58,7 +64,7 @@ body{
 }
 
 .task{
-  width:500px;
+  width:90%;
   height:50px;
   display: flex;
   color: black;
