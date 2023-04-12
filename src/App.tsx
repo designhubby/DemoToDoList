@@ -1,16 +1,12 @@
 import React, {FC, useEffect, useState} from 'react';
 import './App.scss';
 import { IDatePickerObj, ITask, ITaskInfoAll, ITaskInfoAllExtended, taskPriorityLevel, tReactChgEvent, InputFieldName } from './Interfaces';
-import TodoTask, {Props} from './components/TodoTask';
-import DatePicker from "react-datepicker";
+
 import "react-datepicker/dist/react-datepicker.css";
 import { useCallback } from 'react';
-import { PrioritySelector } from './components/PrioritySelector';
 import TaskInputForm from './components/TaskInputForm';
 import { ToDoList } from './components/ToDoList';
 import { DragDropContext, DropResult } from '@hello-pangea/dnd';
-
-type tHandleChg = (e : tReactChgEvent)=>void;
 
 
 const App: FC = ()=> {
