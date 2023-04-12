@@ -105,17 +105,18 @@ const App: FC = ()=> {
     console.log(`source.droppableId  ${source.droppableId}`)
     console.log(`destination ${destination}`)
     console.log(`destination.droppableId ${destination?.droppableId}`)
+    console.log(`destination.index ${destination?.index}`)
     console.log("-------------------------------------")
     
     if(!destination){
         return;
     }
     const newItems = [...todoList]
-    const findIndex = todoList.findIndex(indiv=>indiv.id == parseInt(draggableId))
-    
-    newItems[findIndex].prioritylvl = destination?.droppableId as taskPriorityLevel
-    const [removed] = newItems.splice(source.index, 1);
-    newItems.splice(destination.index, 0, removed);
+    const findIndexDraggable = todoList.findIndex(indiv=>indiv.id == parseInt(draggableId))
+    const findIndexDroppable = todoList.findIndex(indiv=>indiv.id == destination.index)
+    newItems[findIndexDraggable].prioritylvl = destination?.droppableId as taskPriorityLevel
+    const [removed] = newItems.splice(findIndexDraggable, 1);
+    newItems.splice(findIndexDroppable, 0, removed);
     setTodoList(newItems);
 
 }

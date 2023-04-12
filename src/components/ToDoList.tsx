@@ -17,24 +17,6 @@ export interface IToDoListProps<T extends ITaskInfoAll> {
 
 export const ToDoList = <T extends ITaskInfoAll,>({id, ToDoListArray, removeTask, setTodoList, filter}: IToDoListProps<T>): JSX.Element => {
 
-    // const onDragEnd = (result: DropResult )=>{
-    //     const {source, destination, draggableId} = result;
-    //     console.log(draggableId)
-    //     console.log(source)
-    //     console.log(source.droppableId)
-    //     console.log(destination)
-        
-    //     if(!destination){
-    //         return;
-    //     }
-    //     const newItems = [...ToDoListArray]
-    //     let rElement = ToDoListArray.filter(indiv=>indiv.id = parseInt(draggableId))
-    //     rElement[0].
-    //     const [removed] = newItems.splice(source.index, 1);
-    //     newItems.splice(destination.index, 0, removed);
-    //     setTodoList(newItems);
-
-    // }
 
   return (
     <>
@@ -49,7 +31,7 @@ export const ToDoList = <T extends ITaskInfoAll,>({id, ToDoListArray, removeTask
 
                     {ToDoListArray.filter((indiv)=>indiv.prioritylvl== filter).map((indiv: T, key:number) => (
 
-                        <Draggable key={indiv.id} draggableId={indiv.id.toString()} index={key}>
+                        <Draggable key={indiv.id} draggableId={indiv.id.toString()} index={indiv.id}>
                             
                             {(provided, snapshot)=>(
                                 <div 
