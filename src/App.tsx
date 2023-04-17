@@ -122,7 +122,7 @@ const App: FC = ()=> {
   return (
     <div className="App">
       <div className='header'>
-      
+        <h1>{process.env.NODE_ENV}</h1>
         <TaskInputForm currAllTaskInfo={currAllTaskInfo} addTask={addTask} handleChangeAll = {handleChangeAll}/>
         
         

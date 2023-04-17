@@ -19,6 +19,7 @@ const TaskInputForm:FC<ITaskInputFormProps> = ({currAllTaskInfo, handleChangeAll
   
   return (
     <>
+    <div className ='inputForm'>
       <div className = 'inputContainer'>
         <input name ={InputFieldName.taskName}  type ="text" value={currAllTaskInfo.taskName || ""} onChange={handleChangeAll} placeholder='Task...'/>
         <input name = {InputFieldName.deadline} type ="number" value={currAllTaskInfo.deadline || ""} onChange={handleChangeAll} placeholder = "Deadline (in Days)..."/>
@@ -38,6 +39,7 @@ const TaskInputForm:FC<ITaskInputFormProps> = ({currAllTaskInfo, handleChangeAll
           enumVariable ={taskPriorityLevel}/>
       </div>
       <button onClick={addTask}> Add Task</button>
+      </div>
     </>
     
   );

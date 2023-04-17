@@ -16,6 +16,7 @@ body{
   background-color: tomato;
   width: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
@@ -23,6 +24,10 @@ body{
 .header .inputContainer{
   display:flex;
   flex-direction: column;
+}
+.header .inputForm{
+  display: flex;
+  flex-direction: row;
 }
 
 .header input{
@@ -52,8 +57,9 @@ body{
   flex-direction: row;
 }
 .todoList{
-  flex: 70%;
+  flex: 30%;
   width:30%;
+  height: 50%;
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -62,6 +68,17 @@ body{
   background-color: lightblue;
   border: 9px solid black;
 }
+@media only screen and (max-width: 900px){
+  .allLists{
+    flex-direction: column;
+  }
+  .todoList{
+    width:100%;
+  }
+}
+
+
+
 
 .task{
   width:90%;
