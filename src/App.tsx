@@ -1,32 +1,46 @@
 import React, {FC, useEffect, useState} from 'react';
 import './App.scss';
 import { IDatePickerObj, ITask, ITaskInfoAll, ITaskInfoAllExtended, taskPriorityLevel, tReactChgEvent, InputFieldName } from './Interfaces';
-
+import toast, { Toaster } from 'react-hot-toast';
 import "react-datepicker/dist/react-datepicker.css";
 import { useCallback } from 'react';
 import TaskInputForm from './components/TaskInputForm';
 import { ToDoList } from './components/ToDoList';
 import { DragDropContext, DropResult } from '@hello-pangea/dnd';
+import { GetAllToDoList } from './services/dataToDoList';
 
 
 const App: FC = ()=> {
 
-  const [todoList,setTodoList] = useState<ITaskInfoAll[]>(()=>{
-    const saved = localStorage.getItem("ToDoList");
-    let  initialValue:ITaskInfoAll[];
-    if(saved){
-      initialValue = JSON.parse(saved)
-      initialValue.forEach(indiv=>{
-        indiv.startDate = indiv.startDate ? new Date(indiv.startDate ) : null;
-      })
-      return initialValue;
-    }
-    return []
-    
-  });
+
+    const [todoList, setTodoList] = useState<ITaskInfoAll[]>([]);
+
+    useEffect(
+      ()=>{
+      
+      (async ()=>{
+        const fetchedToDoList =  await GetAllToDoList();
+        
+        if(fetchedToDoList){
+          let  initialToDoList:ITaskInfoAll[];
+          initialToDoList = JSON.parse(fetchedToDoList)
+          initialToDoList.forEach(indiv=>{
+            indiv.startDate = indiv.startDate ? new Date(indiv.startDate ) : null;
+            indiv.deadline = indiv.deadline ? new Date(indiv.deadline ) : null;
+          })
+          setTodoList(initialToDoList)
+        }
+      })();  
+    },[])
+
+
   useEffect(() => {
     // storing input name
-    localStorage.setItem("ToDoList", JSON.stringify(todoList));
+    console.log(`running 2nd useEffect`)
+    if(todoList.length>0){
+      localStorage.setItem("ToDoList", JSON.stringify(todoList));
+
+    }
   }, [todoList]);
   
   
@@ -45,7 +59,7 @@ const App: FC = ()=> {
   let demoobj : ITaskInfoAll = {
     id: Date.now(),
     taskName : "taskname",
-    deadline : 1,
+    deadline : new Date(2000,1,1),
     startDate : new Date(2000,1,1),
     prioritylvl : taskPriorityLevel.High,
   }
@@ -61,6 +75,7 @@ const App: FC = ()=> {
       console.warn(`Invalid InputFieldName: ${e.target.name}`);
       return;
     }
+
     const chgkeyname : InputFieldName = e.target.name as InputFieldName;
     const chgkeyvalue = e.target.value
     let currentTaskInfo: ITaskInfoAll = currAllTaskInfo;
@@ -78,6 +93,17 @@ const App: FC = ()=> {
 
 
   const addTask= () : void =>{
+    
+    //check if e.target.name = enddate or startdate
+    ///if enddate < startdate disregard
+if(currAllTaskInfo.startDate && currAllTaskInfo.deadline ){
+  if(currAllTaskInfo.startDate > currAllTaskInfo.deadline){
+    toast.error('Start date must be earlier than end date');
+    return
+  }
+}
+    
+
     const newTask :ITaskInfoAll = {
       id: Date.now(),
       taskName : currAllTaskInfo.taskName,
@@ -87,11 +113,13 @@ const App: FC = ()=> {
     }
     setTodoList((prev)=>[...prev,newTask ])
     setCurrAllTaskInfo(blanktask);
+    toast.success('Successfully created!');
   }
 
   const removeTask = (id:number) :void=>{
     const newTodoList = todoList.filter((indiv)=>indiv.id !== id);
     setTodoList(newTodoList);
+    toast.success('Successfully Deleted');
   }
   const onDragEnd = (result: DropResult )=>{
     const {source, destination, draggableId} = result;
@@ -140,6 +168,7 @@ const App: FC = ()=> {
           </div>
         </DragDropContext>
       </div>
+      <Toaster />
     </div>
   );
 }

@@ -27,6 +27,7 @@ export const ToDoList = <T extends ITaskInfoAll,>({id, ToDoListArray, removeTask
 
                 <div 
                     { ...provided.droppableProps}
+                    className="Droppable"
                     ref={provided.innerRef}>
 
                     {ToDoListArray.filter((indiv)=>indiv.prioritylvl== filter).map((indiv: T, key:number) => (

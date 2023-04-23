@@ -2,12 +2,11 @@ import { resolve } from "path"
 import { setInterval } from "timers/promises"
 import { ITaskInfoAll } from "../Interfaces"
 
-export const GetAllToDoList = async()=>{
+export const GetAllToDoList = async() :Promise<string> =>{
     return new Promise((resolve,reject)=>{
-        let s:number = setTimeout(()=>{
+        setTimeout(()=>{
             const saved = localStorage.getItem("ToDoList");
-            let  initialValue:ITaskInfoAll[];
-            resolve(saved)
+            saved && resolve(saved)
         },100)
     })
 }

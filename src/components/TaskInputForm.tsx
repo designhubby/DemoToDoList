@@ -22,8 +22,17 @@ const TaskInputForm:FC<ITaskInputFormProps> = ({currAllTaskInfo, handleChangeAll
     <div className ='inputForm'>
       <div className = 'inputContainer'>
         <input name ={InputFieldName.taskName}  type ="text" value={currAllTaskInfo.taskName || ""} onChange={handleChangeAll} placeholder='Task...'/>
-        <input name = {InputFieldName.deadline} type ="number" value={currAllTaskInfo.deadline || ""} onChange={handleChangeAll} placeholder = "Deadline (in Days)..."/>
         <DatePicker
+          selected={currAllTaskInfo.deadline}
+          onChange={(date) => handleChangeAll({
+            target:{
+              name: InputFieldName.deadline,
+              value: date,
+            }
+          })}
+          placeholderText="Click to select a Deadline date" 
+          />
+          <DatePicker
           selected={currAllTaskInfo.startDate}
           onChange={(date) => handleChangeAll({
             target:{
@@ -31,6 +40,7 @@ const TaskInputForm:FC<ITaskInputFormProps> = ({currAllTaskInfo, handleChangeAll
               value: date,
             }
           })}
+          placeholderText="Click to select a Start date" 
           />
         <PrioritySelector  
           handleChange = {handleChangeAll}

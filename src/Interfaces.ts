@@ -18,7 +18,7 @@ export enum Scoops {
 export interface ITaskInfoAll{
   id: number;
   taskName : string |null;
-  deadline : number | null;
+  deadline : Date | null;
   startDate : Date | null;
   prioritylvl : taskPriorityLevel | null
 }

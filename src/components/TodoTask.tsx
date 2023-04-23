@@ -13,13 +13,32 @@ const dateOptions: Intl.DateTimeFormatOptions = {
 
 }
 const TodoTask:FC<Props> = ({task, removeTask}: Props) => {
+
+  //if task.deadline > Date.now() then 
+  const styleOverdue = ()=>{
+   if(task.deadline) {
+      console.log("deadline exists")
+      const deadlineDate = new Date(task.deadline);
+      const currDate =new Date();
+      console.log(`deadlineDate`)
+      console.log(deadlineDate)
+      console.log(`currDate`)
+      console.log(currDate)
+      console.log(deadlineDate < currDate)
+      if( deadlineDate < currDate){
+        return "content-overdue"  
+      }
+   }
+   return ""
+  }
+
   return (
     <div className='task'>
-      <div className='content'>
+      <div className={`content ${styleOverdue()}`}>
         <div>Name: {task.taskName}</div>
         
-        <div>Start Date: {task.startDate?.toLocaleDateString('en-US',dateOptions) }</div>
-        <div>Deadline: {task.deadline}</div>
+        <div>Start: {task.startDate?.toLocaleDateString('en-US',dateOptions) }</div>
+        <div>Deadline: {task.deadline?.toLocaleDateString('en-US',dateOptions)}</div>
         <div>Priority: {task.prioritylvl}</div>
       </div>
       <button onClick={()=>removeTask(task.id)}>X</button>
