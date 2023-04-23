@@ -96,12 +96,12 @@ const App: FC = ()=> {
     
     //check if e.target.name = enddate or startdate
     ///if enddate < startdate disregard
-if(currAllTaskInfo.startDate && currAllTaskInfo.deadline ){
-  if(currAllTaskInfo.startDate > currAllTaskInfo.deadline){
-    toast.error('Start date must be earlier than end date');
-    return
-  }
-}
+    if(currAllTaskInfo.startDate && currAllTaskInfo.deadline ){
+      if(currAllTaskInfo.startDate > currAllTaskInfo.deadline){
+        toast.error('Start date must be earlier than end date');
+        return
+      }
+    }
     
 
     const newTask :ITaskInfoAll = {
