@@ -32,13 +32,14 @@ export const ToDoList = <T extends ITaskInfoAll,>({id, ToDoListArray, removeTask
 
                     {ToDoListArray.filter((indiv)=>indiv.prioritylvl== filter).map((indiv: T, key:number) => (
 
-                        <Draggable key={indiv.id} draggableId={indiv.id.toString()} index={indiv.id}>
+                        <Draggable  key={indiv.id} draggableId={indiv.id.toString()} index={indiv.id}>
                             
                             {(provided, snapshot)=>(
                                 <div 
                                     ref={provided.innerRef}
                                     {...provided.draggableProps}
-                                    {...provided.dragHandleProps}>
+                                    {...provided.dragHandleProps}
+                                    className = "draggable">
                                     <TodoTask key={key} task={indiv} removeTask={removeTask}/>
                                 </div>
 

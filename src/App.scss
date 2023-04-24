@@ -1,6 +1,7 @@
 body{
   margin: 0;
   padding: 0;
+  background-color: black;
 }
 .App{
   display:flex;
@@ -20,14 +21,14 @@ body{
   justify-content: center;
   align-items: center;
 }
+.header .inputForm{
+  display: flex;
+  flex-direction: row;
+}
 
 .header .inputContainer{
   display:flex;
   flex-direction: column;
-}
-.header .inputForm{
-  display: flex;
-  flex-direction: row;
 }
 
 .header input{
@@ -61,18 +62,27 @@ body{
   padding: 20px;
   min-height: 100%;
 }
+.draggable{
+  height: 115px;
+}
 .todoList{
   flex: 30%;
   min-width: 300px;
   width:90%;
-  height: 50%;
+  height: min-content;
   box-sizing: border-box;
   display: flex;
   align-items: center;
   padding-top: 50px;
+  padding-bottom: 50px;
   flex-direction: column;
   background-color: lightblue;
   border: 9px solid black;
+
+  & .todoList-priority{
+    font-size: 2rem;
+    font-weight: bold;
+  }
 }
 @media only screen and (max-width: 1016px){
   .allLists{
@@ -85,7 +95,6 @@ body{
 
 
 
-
 .task{
   width:90%;
   height:50px;
@@ -94,43 +103,73 @@ body{
   margin: 15px;
 
   & .content{
-    flex: 90%;
+    flex: 100%;
+    flex-wrap: wrap;
     display:flex;
     align-items: center;
-    
-    & :first-child{
-      border-bottom-left-radius: 1rem;
-      border-top-left-radius: 1rem;
-      border-left: 1px solid black;
-      border-right: 2px lightblue solid;
-    }
 
     & *{
       width: 100%;
-      height: 100%;
-      background-color: grey;
+      height: 65px;
       display:flex ;
+      font-size: 1.1rem;
+      flex: 1;
+      text-align: center;
       justify-content:center;
       align-items: center;
+      background-color: grey;
+      padding-bottom: 5px;
+      
+    }    
+    & :first-child{
+      color: white;
+      height: 40px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      font-family: Arial, Helvetica, sans-serif;
+      border-top-left-radius: 1rem;
+    }
+    & :nth-child(3){
+      flex: 1;
+      border-bottom-left-radius: 1rem;
+      padding-left: .5rem;
+      
     }
     
   }
   & .content-overdue{
     @extend .content;
     & *{
-    background-color: tomato;
+      background-color: tomato;
+
     }
   }
   & button{
     flex: 10%;
+    height: 115px;
     border-bottom-right-radius: 1rem;
     border-top-right-radius: 1rem;
-    border-right: 0px solid black;
-    border: 0px;
+    border-right: 1px solid black;
+    border-left: 1px solid black;
     color: gainsboro;
     background-color: gray;
     cursor: pointer;
   }
+  & .tasklinebreak{
+    display: flex;
+    flex: 100%;
+    height: 0;
+    padding: 0;
+    margin:0;
+    width: 100%;
+  }
 
 }
 
+.devstate{
+  display: block;
+  position:fixed;
+  bottom: 0;
+  right:0;
+  color: white;
+}

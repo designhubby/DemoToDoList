@@ -102,6 +102,19 @@ const App: FC = ()=> {
         return
       }
     }
+    if(!currAllTaskInfo.taskName){
+      toast.error('Add in a task name');
+      return
+    }
+    if(currAllTaskInfo.taskName){
+      if(currAllTaskInfo.taskName.length>20){
+        toast.error('Task Name Max 20 Characters');
+        return
+      }
+    }
+
+    
+
     
 
     const newTask :ITaskInfoAll = {
@@ -150,7 +163,7 @@ const App: FC = ()=> {
   return (
     <div className="App">
       <div className='header'>
-        <h1>{process.env.NODE_ENV}</h1>
+        <h1>ToDo List </h1>
         <TaskInputForm currAllTaskInfo={currAllTaskInfo} addTask={addTask} handleChangeAll = {handleChangeAll}/>
         
         
@@ -158,17 +171,21 @@ const App: FC = ()=> {
       <div className='allLists'>
         <DragDropContext onDragEnd={onDragEnd}>
           <div className = "todoList">
+            <div className="todoList-priority">High</div>
             <ToDoList id={"High"} ToDoListArray={todoList} removeTask={removeTask} setTodoList={setTodoList} filter = {taskPriorityLevel.High}/>
           </div>
           <div className = "todoList">
+            <div className="todoList-priority">Medium</div>
             <ToDoList id={"Med"} ToDoListArray={todoList} removeTask={removeTask} setTodoList={setTodoList} filter = {taskPriorityLevel.Medium}/>
           </div>
           <div className = "todoList">
+            <div className="todoList-priority">Low</div>
             <ToDoList id={"Low"} ToDoListArray={todoList} removeTask={removeTask} setTodoList={setTodoList} filter = {taskPriorityLevel.Low}/>
           </div>
         </DragDropContext>
       </div>
       <Toaster />
+      <div className="devstate">{process.env.NODE_ENV} </div>
     </div>
   );
 }
