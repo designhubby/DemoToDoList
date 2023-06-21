@@ -21,12 +21,32 @@ export const Root:FC<IRootProps>= (props: IRootProps) =>{
     const {token, setToken} = useToken();
     const [loggedin, setLoggedin] = useState<boolean>(false);
 
-    const authenticateGetToken = async(username: string, password: string) => await auth({userName: username, password: password});
+    const authenticateGetToken = async(username: string, password: string) => {
+
+      const tokenResult = await auth({userName: username, password: password})
+      console.log("auth run")
+      console.log(username + " " + password);
+      console.log(tokenResult.success + " " + tokenResult.token);
+      if(tokenResult.success && tokenResult.token){
+        console.log("Set Token")
+        setToken(tokenResult.token);
+      }
+    };
+    const signOut = (): void=>{
+      console.log("running Signout")
+      setToken(null);
+    }
 
     //useEffect for authen stat
     useEffect(()=>{
+      
+      console.log(`useEffect`)
         if(token){
+          console.log("setting true")
             setLoggedin(true);
+        }else{
+          console.log("setting false")
+          setLoggedin(false);
         }
     },[token])
 
@@ -35,7 +55,7 @@ export const Root:FC<IRootProps>= (props: IRootProps) =>{
 
     
       <>
-        <NavBarTop loggedIn = {loggedin} getToken = {authenticateGetToken}/>
+        <NavBarTop loggedIn = {loggedin} getToken = {authenticateGetToken} signOut={signOut}/>
         <App/>
     
       </>

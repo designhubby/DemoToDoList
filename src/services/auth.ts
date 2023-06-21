@@ -3,6 +3,8 @@ import { IAuthInput, IAuthOutput, Nullable } from "../components/interfaces";
 
 
 export async function auth({userName, password}: IAuthInput): Promise<Nullable<IAuthOutput>>{
+    console.log("auth service");
+    console.log(userName + " " + password);
     const userNameCorrect : boolean = userName == "rogers";
     const pwdCorrect: boolean = password == "rogers123";
 
