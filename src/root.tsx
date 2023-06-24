@@ -2,11 +2,21 @@ import React, {FC, useEffect, useState} from 'react';
 import { CButton, CCollapse, CContainer, CDropdown, CForm, CFormInput, CNavbar, CNavbarBrand, CNavbarNav, CNavbarToggler, CNavItem, CNavLink } from '@coreui/react';
 
 import { navItemsGuest, INavItems, itemType, profileItemsUser } from './rootItems';
-import { render } from '@testing-library/react';
 import { NavBarTop } from './components/navbartop';
 import App from './App';
-import useToken from './components/useToken';
+import useToken from './components/hooks/useToken';
 import { auth } from './services/auth';
+import { Modal } from './components/modal';
+import { IProfileData, Profile } from './components/profile';
+import { GetUserData, PostUserData } from './services/dataUser';
+
+const blankProfileData : IProfileData = {
+  userName : "",
+  email: "",
+  password:"",
+  firstName: "",
+  lastName: "",
+}
 
 
 export interface IRootProps {
@@ -20,6 +30,40 @@ export const Root:FC<IRootProps>= (props: IRootProps) =>{
     //token hook
     const {token, setToken} = useToken();
     const [loggedin, setLoggedin] = useState<boolean>(false);
+    const [modalShow, setModalShow] = useState<boolean>(false);
+
+    const getUserData = async ()=>{
+      const userData = await GetUserData();
+      setFormData(userData)
+      setFormDataOri(userData);
+    }
+    const [formData, setFormData] =useState<IProfileData>(blankProfileData);
+    const [formDataOri, setFormDataOri] =useState<IProfileData>(blankProfileData);
+
+
+  const cancelUserDataChange = ()=>{
+    setFormData(formDataOri);
+    setModalShow(false);
+  }
+
+  const handleProfileFieldChange= (e: React.ChangeEvent<HTMLInputElement>)=>{
+    const name = e.target.name;
+    const value = e.target.value;
+    console.log(`name`)
+    console.log(name)
+    console.log(`value`)
+    console.log(value)
+    
+    setFormData((prev)=>{
+      console.log("setFormData prev");
+      
+        return  {
+          ...prev, [name]: value
+          }
+      
+    }
+    );
+}
 
     const authenticateGetToken = async(username: string, password: string) => {
 
@@ -32,9 +76,44 @@ export const Root:FC<IRootProps>= (props: IRootProps) =>{
         setToken(tokenResult.token);
       }
     };
+
+    const handleOnClick = (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement, MouseEvent>, id:string)=>{
+      console.log(`handleOnClick`);
+      console.log(`id: ${id}`);
+      
+      switch(id){
+        case "signout":
+          signOut();
+          break;
+        case "profile":
+          console.log(`setModalShow True`)
+          setModalShow(true);
+          break;
+        default:
+          break;
+      }
+
+      if(id == "signout"){
+        signOut();
+      }
+    }
+
     const signOut = (): void=>{
       console.log("running Signout")
       setToken(null);
+    }
+
+    const handleOnSave= async():Promise<void>=>{
+      console.log(`handleonsave`)
+      await PostUserData(formData);
+      setModalShow(false)
+    }
+
+    const rootFunctions = {
+      handleOnSave: handleOnSave,
+      handleProfileFieldChange: handleProfileFieldChange,
+      getUserData: getUserData,
+      cancelUserDataChange: cancelUserDataChange,
     }
 
     //useEffect for authen stat
@@ -49,13 +128,17 @@ export const Root:FC<IRootProps>= (props: IRootProps) =>{
           setLoggedin(false);
         }
     },[token])
-
+//<Profile {...mockUserProfileData}/>
   return (
 
 
     
       <>
-        <NavBarTop loggedIn = {loggedin} getToken = {authenticateGetToken} signOut={signOut}/>
+        <NavBarTop loggedIn = {loggedin} getToken = {authenticateGetToken} signOut={signOut} handleOnClick={handleOnClick}/>
+        
+        <Modal visible = {modalShow} title ="User Profile" functionInject={rootFunctions}>
+          {(functionsInjected)=> <Profile  profileData = {formData} func={rootFunctions} />}
+        </Modal>
         <App/>
     
       </>

@@ -1,9 +1,9 @@
 import React, {ChangeEvent, ChangeEventHandler, FC, JSXElementConstructor, ReactElement, useState} from 'react';
 
 import { CButton, CCollapse, CContainer, CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle, CForm, CFormInput, CNavbar, CNavbarBrand, CNavbarNav, CNavbarToggler, CNavItem, CNavLink } from '@coreui/react';
-import { formInfo, guestForm, INavItems, itemType, navItemsGuest, profiledForm, profileItemsUser } from '../rootItems';
+import { IFormInfo, guestForm, INavItems, itemType, navItemsGuest, profiledForm, profileItemsUser } from '../rootItems';
 import '@coreui/coreui/dist/css/coreui.min.css'
-import { Nullable, IAuthOutput } from './interfaces';
+import { Nullable, IAuthOutput } from './interfaces/interfaces';
 import { CNavLinkProps } from '@coreui/react/dist/components/nav/CNavLink';
 
 
@@ -11,12 +11,16 @@ export interface INavBarTopProps {
     loggedIn: boolean,
     getToken: (username: string, password: string) => Promise<void>,
     signOut: ()=>void,
+    handleOnClick: (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement, MouseEvent>, id:string)=>void,
 }
-interface iFunct{
+interface INavBarFunctions{
   onFieldChange: (e: ChangeEvent<HTMLInputElement>) => void,
   onSubmit : (e: React.FormEvent<HTMLFormElement>) => Promise<void>,
-  handleOnClick :  (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement, MouseEvent>) => void,
+  handleOnClick :  (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement, MouseEvent>, id:string) => void,
 }
+
+
+
 
 export function NavBarTop (props: INavBarTopProps) {
     const [visible, setVisible] = React.useState(false)
@@ -61,16 +65,13 @@ export function NavBarTop (props: INavBarTopProps) {
         console.log(btn)
       }
     }
-    const handleOnClick = (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement, MouseEvent>)=>{
-      console.log(`handleOnClick`);
-      props.signOut();
-    }
 
 
-    const funct :iFunct = {
-      "onFieldChange": onFieldChange,
-      "onSubmit" : onSubmit,
-      "handleOnClick": handleOnClick,
+
+    const funct :INavBarFunctions = {
+      onFieldChange: onFieldChange,
+      onSubmit : onSubmit,
+      handleOnClick: props.handleOnClick,
     }
 
 
@@ -100,7 +101,6 @@ export function NavBarTop (props: INavBarTopProps) {
                   </CNavLink>
                 </CNavItem>
                 {NavElementsOutput( props.loggedIn ? profiledForm:  guestForm, funct)}
-                {/*<NavElementsOutput  {...props.loggedIn == true ? {...profileItemsUser} : {...navItemsGuest}} />*/}
               </CNavbarNav>
             </CCollapse>
           </CContainer>
@@ -108,7 +108,7 @@ export function NavBarTop (props: INavBarTopProps) {
     </div>
   );
 }
-const NavElementsOutput = (Props: formInfo, funct: iFunct): JSX.Element =>{
+const NavElementsOutput = (Props: IFormInfo, funct: INavBarFunctions): JSX.Element =>{
 
     const renderElement = (ItemProp:INavItems, index: number)=>{
         
@@ -122,11 +122,11 @@ const NavElementsOutput = (Props: formInfo, funct: iFunct): JSX.Element =>{
                 return <CFormInput onChange={(e)=>funct.onFieldChange(e)} type ="password" name={ItemProp.id} placeholder={ItemProp.label}key={index}/>
             }
             if(ItemProp.type == itemType.DropDownItem){
-                return <CDropdownItem key={index} onClick={(e)=>funct.handleOnClick(e)} href="#">{ItemProp.label}</CDropdownItem>
+                return <CDropdownItem key={index} onClick={(e)=>funct.handleOnClick(e, ItemProp.id)} href="#">{ItemProp.label}</CDropdownItem>
             }
         }
 
-    const renderElementSet = (Props: formInfo): JSX.Element[]=>{
+    const renderElementSet = (Props: IFormInfo): JSX.Element[]=>{
         
         const formSet = Props.formData.filter(indiv => indiv.form == true);
         const dropDownSet = Props.formData.filter(indiv=> indiv.type == itemType.DropDownItem && indiv.form == false);
@@ -146,7 +146,7 @@ const NavElementsOutput = (Props: formInfo, funct: iFunct): JSX.Element =>{
         if(dropDownSet){
             results.push(
                 <CDropdown  variant="nav-item" popper={false}>
-                    <CDropdownToggle>Dropdown link</CDropdownToggle>
+                    <CDropdownToggle>{Props.title}</CDropdownToggle>
                     <CDropdownMenu>
                         {dropDownSet.map((indiv, i)=>{
                             return renderElement(indiv, i);

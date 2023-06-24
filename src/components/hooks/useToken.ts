@@ -1,14 +1,14 @@
 import { useState } from 'react';
-import { Nullable, IAuthOutput } from './interfaces';
+import { Nullable, IAuthOutput } from '../interfaces/interfaces';
 
-interface iUseToken{
+interface IUseToken{
     setToken: (userToken: string | null)=>void;
     token: string | null;
 }
 
 
 
-export default function useToken(): iUseToken{
+export default function useToken(): IUseToken{
 
     const getToken = (): string | null =>{
         const tokenString  = localStorage.getItem('token');

@@ -1,4 +1,4 @@
-import { IAuthInput, IAuthOutput, Nullable } from "../components/interfaces";
+import { IAuthInput, IAuthOutput, Nullable } from "../components/interfaces/interfaces";
 
 
 

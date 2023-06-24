@@ -19,9 +19,10 @@ export interface INavItems{
     doSomething?: (index:number)=> JSX.Element;
 
 }
-export interface formInfo{
+export interface IFormInfo{
     formName: string,
     formData: INavItems[],
+    title?: string,
 }
 
 export const navItemsGuest: INavItems[] = [
@@ -62,24 +63,21 @@ export const profileItemsUser: INavItems[] = [
         label: "My Profile",
         type: itemType.DropDownItem,
         form: false,
-        doSomething: (index:number)=>(
-            <CDropdownItem  key={index} type ="submit" name = "btnProfile">{navItemsGuest[0].label}</CDropdownItem >)
     },{
         id: "signout",
         label: "Sign Out",
         type: itemType.DropDownItem,
         form: false,
-        doSomething: (index:number)=>(
-            <CDropdownItem  key={index} type ="submit" name = "btnSignout" >{navItemsGuest[1].label}</CDropdownItem >)
     },
 ]
 
-export const guestForm : formInfo = {
+export const guestForm : IFormInfo = {
     formName : "guestForm",
     formData: navItemsGuest,
 }
 
-export const profiledForm : formInfo = {
+export const profiledForm : IFormInfo = {
     formName : "signedInForm",
     formData: profileItemsUser,
+    title : "My Profile",
 }
