@@ -10,3 +10,11 @@ export const GetAllToDoList = async() :Promise<string> =>{
         },100)
     })
 }
+
+export const PostAllToDoList = async(todoData: ITaskInfoAll[]): Promise<void>=>{
+    Promise.resolve(
+        setTimeout(()=>{
+            localStorage.setItem("ToDoList", JSON.stringify(todoData));
+        },100)
+    )
+}
