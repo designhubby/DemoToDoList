@@ -1,46 +1,63 @@
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, useEffect, useReducer, useRef, useState} from 'react';
 import './App.scss';
-import { IDatePickerObj, ITask, ITaskInfoAll, ITaskInfoAllExtended, taskPriorityLevel, tReactChgEvent, InputFieldName } from './Interfaces';
+import { IDatePickerObj, ITask, ITaskInfoAll, ITaskInfoAllExtended, taskPriorityLevel, tReactChgEvent, InputFieldName, IUserToDoLists } from './Interfaces';
 import toast, { Toaster } from 'react-hot-toast';
 import "react-datepicker/dist/react-datepicker.css";
 import { useCallback } from 'react';
 import TaskInputForm from './components/TaskInputForm';
 import { ToDoList } from './components/ToDoList';
 import { DragDropContext, DropResult } from '@hello-pangea/dnd';
-import { GetAllToDoList } from './services/dataToDoList';
+import { LocalGetAllToDoList, LocalPostAllToDoList } from './services/LocalDataToDoList';
+import { WebLogin } from './services/authUser';
 
+export interface IAppProps {
+  dataAccess : ()=>Promise<IUserToDoLists>,
+  dataPost: (todoData: ITaskInfoAll[])=>Promise<void>,
+  forceRerender: string | null,
 
-const App: FC = ()=> {
+}
+const App: FC<IAppProps> = (props: IAppProps)=> {
 
 
     const [todoList, setTodoList] = useState<ITaskInfoAll[]>([]);
-
+    const count = useRef(0);
     useEffect(
       ()=>{
       
       (async ()=>{
-        const fetchedToDoList =  await GetAllToDoList();
-        
+        const fetchedToDoList =  await props.dataAccess();
+        console.log(`props.dataAccess`);
+        console.log(props.dataAccess);
+        console.log(`fetchedToDoList`);
+        console.log(fetchedToDoList);
         if(fetchedToDoList){
           let  initialToDoList:ITaskInfoAll[];
-          initialToDoList = JSON.parse(fetchedToDoList)
+          initialToDoList = fetchedToDoList.toDoListData;
           initialToDoList.forEach(indiv=>{
             indiv.startDate = indiv.startDate ? new Date(indiv.startDate ) : null;
             indiv.deadline = indiv.deadline ? new Date(indiv.deadline ) : null;
           })
+          count.current = 1
           setTodoList(initialToDoList)
         }
-      })();  
-    },[])
+      })();   
+    },[props.forceRerender])
 
-
+const runPost = async(data: ITaskInfoAll[])=>{
+  await props.dataPost(data);
+}
   useEffect(() => {
     // storing input name
     console.log(`running 2nd useEffect`)
-    if(todoList.length>0){
-      localStorage.setItem("ToDoList", JSON.stringify(todoList));
-
+    if(todoList.length>0 && count.current == 0){
+      console.log("running runPost" + count.current)
+      runPost(todoList)
+    }else{
+      count.current = 0 
+      console.log("not running runPost")
     }
+
+    
   }, [todoList]);
   
   
@@ -159,13 +176,23 @@ const App: FC = ()=> {
     setTodoList(newItems);
 
 }
+const user ={
+  "email": "bell6@rogers.com",
+  "password": "bell123bell"
+}
+const handleOnTestBtn = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>)=>{
+  console.log(`testing button`)
+  const result = await WebLogin(user);
+  console.log(result);
+
+}
 
   return (
     <div className="App">
       <div className='header'>
-        <h1>ToDo List </h1>
+        <h1>ToDo List {process.env.REACT_APP_BaseURL}</h1>
         <TaskInputForm currAllTaskInfo={currAllTaskInfo} addTask={addTask} handleChangeAll = {handleChangeAll}/>
-        
+        <button type ="button" onClick={(e)=>handleOnTestBtn(e)}>button</button>
         
       </div>
       <div className='allLists'>

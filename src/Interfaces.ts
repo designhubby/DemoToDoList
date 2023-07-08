@@ -23,6 +23,11 @@ export interface ITaskInfoAll{
   prioritylvl : taskPriorityLevel | null
 }
 
+export interface IUserToDoLists{
+  applicationUserId:string;
+  toDoListData: ITaskInfoAll[];
+}
+
 export interface ITaskInfoAllExtended extends ITaskInfoAll{
 
   extraData: string |null;

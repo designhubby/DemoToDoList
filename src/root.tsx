@@ -1,14 +1,15 @@
 import React, {FC, useEffect, useState} from 'react';
-import { CButton, CCollapse, CContainer, CDropdown, CForm, CFormInput, CNavbar, CNavbarBrand, CNavbarNav, CNavbarToggler, CNavItem, CNavLink } from '@coreui/react';
 
-import { navItemsGuest, INavItems, itemType, profileItemsUser } from './rootItems';
 import { NavBarTop } from './components/navbartop';
 import App from './App';
 import useToken from './components/hooks/useToken';
-import { auth } from './services/auth';
 import { Modal } from './components/modal';
 import { IProfileData, Profile } from './components/profile';
 import { GetUserData, PostUserData } from './services/dataUser';
+import { LocalGetAllToDoList, LocalPostAllToDoList } from './services/LocalDataToDoList';
+import { RemoteGetToDoListData, RemotePostToDoListData } from './services/RemotedataToDoList';
+import { WebLogin } from './services/authUser';
+
 
 const blankProfileData : IProfileData = {
   userName : "",
@@ -18,6 +19,7 @@ const blankProfileData : IProfileData = {
   lastName: "",
 }
 
+//if token exists ? getAxiosSesson : getLocalSession
 
 export interface IRootProps {
 }
@@ -67,7 +69,7 @@ export const Root:FC<IRootProps>= (props: IRootProps) =>{
 
     const authenticateGetToken = async(username: string, password: string) => {
 
-      const tokenResult = await auth({userName: username, password: password})
+      const tokenResult = await WebLogin({email: username, password: password})
       console.log("auth run")
       console.log(username + " " + password);
       console.log(tokenResult.success + " " + tokenResult.token);
@@ -120,7 +122,7 @@ export const Root:FC<IRootProps>= (props: IRootProps) =>{
     useEffect(()=>{
       
       console.log(`useEffect`)
-        if(token){
+        if(token != null){
           console.log("setting true")
             setLoggedin(true);
         }else{
@@ -135,11 +137,11 @@ export const Root:FC<IRootProps>= (props: IRootProps) =>{
     
       <>
         <NavBarTop loggedIn = {loggedin} getToken = {authenticateGetToken} signOut={signOut} handleOnClick={handleOnClick}/>
-        
+        <h1>my Token {token}</h1>
         <Modal visible = {modalShow} title ="User Profile" functionInject={rootFunctions}>
           {(functionsInjected)=> <Profile  profileData = {formData} func={rootFunctions} />}
         </Modal>
-        <App/>
+        <App dataAccess={token ?RemoteGetToDoListData : LocalGetAllToDoList} dataPost= {token ? RemotePostToDoListData : LocalPostAllToDoList} forceRerender = {token} />
     
       </>
     

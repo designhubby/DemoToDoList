@@ -12,8 +12,9 @@ export default function useToken(): IUseToken{
 
     const getToken = (): string | null =>{
         const tokenString  = localStorage.getItem('token');
-
-        const userToken = tokenString ? JSON.parse(tokenString) : null;
+        console.log(`tokenString`);
+        console.log(tokenString);
+        const userToken = tokenString ? JSON.parse(tokenString, (key,value)=>  value == 'null' ? null : value) : null;
         console.log(`userToken`)
         console.log(userToken)
         return userToken

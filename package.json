@@ -14,6 +14,7 @@
     "@types/react-beautiful-dnd": "^13.1.4",
     "@types/react-dom": "^18.0.11",
     "axios": "^1.4.0",
+    "joi": "^17.9.2",
     "localforage": "^1.10.0",
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
@@ -25,10 +26,11 @@
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
+  "type": "module",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!axios)/'",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
