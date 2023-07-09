@@ -211,7 +211,6 @@ const handleOnTestBtn = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent
           </div>
         </DragDropContext>
       </div>
-      <Toaster />
       <div className="devstate">{process.env.NODE_ENV} </div>
     </div>
   );

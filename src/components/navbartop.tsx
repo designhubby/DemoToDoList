@@ -5,6 +5,9 @@ import { IFormInfo, guestForm, INavItems, itemType, navItemsGuest, profiledForm,
 import '@coreui/coreui/dist/css/coreui.min.css'
 import { Nullable, IAuthOutput } from './interfaces/interfaces';
 import { CNavLinkProps } from '@coreui/react/dist/components/nav/CNavLink';
+import Joi from 'joi';
+import toast from 'react-hot-toast';
+
 
 
 export interface INavBarTopProps {
@@ -19,11 +22,17 @@ interface INavBarFunctions{
   handleOnClick :  (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement, MouseEvent>, id:string) => void,
 }
 
+const joiValidationSchema = Joi.object().keys({
+  userid: Joi.string().label('User Id').min(4).max(100).required(),
+  password:Joi.string().label('Password').min(4).max(100).required(),
 
+}).options({allowUnknown: true});
 
 
 export function NavBarTop (props: INavBarTopProps) {
     const [visible, setVisible] = React.useState(false)
+    const [errorList, setErrorList] = useState({})
+
     const [credentials, setCredentials] = useState(
       {
         userid : "",
@@ -38,6 +47,27 @@ export function NavBarTop (props: INavBarTopProps) {
       const {name, value}= e.target;
       console.log(`onFieldChange name: ${name} value: ${value}`);
       setCredentials((prev)=>({...prev, [name] : value}));
+    }
+
+    const validationSuccess = (userid: string, password:string)=>{
+      const credentials = {userid: userid, password: password};
+      const validationResult = joiValidationSchema.validate(credentials, {abortEarly: false});
+      console.log(`validationResult`)
+      console.log(validationResult)
+      let _errorList :  null | {}= null;
+
+      if(validationResult.error){
+        console.log(`validationResult.error branch`);
+        validationResult.error.details.forEach(indivFieldError =>{
+          console.log(`indivFieldError`);
+          console.log(indivFieldError);
+          _errorList ? (_errorList = Object.assign({},{..._errorList}, {[indivFieldError.context?.key ?? 'unknown']: indivFieldError.message}) ) : _errorList = Object.assign({}, {[indivFieldError.context?.key ?? 'unknown']: indivFieldError.message});
+        })
+        setErrorList(_errorList ?? {});
+        return false;
+      }else{
+        return true;
+      }
     }
 
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>)=>{
@@ -55,12 +85,33 @@ export function NavBarTop (props: INavBarTopProps) {
       
       console.log(`formname`)
       console.log(formname)
+
       
       const btn = document.activeElement?.getAttribute("name");
       if(btn == "btnSignIn"){
         console.log(e.target)
         if(userid && password){
-          await props.getToken(userid, password);
+          //validate fields
+          const validationResult = validationSuccess(userid, password)
+          if(validationResult){
+            //ran vlidation success
+            try{
+              const data = await props.getToken(userid, password); //if success validation
+            }catch(err){
+              console.log(err);
+              toast.error("Login Failed");
+            }
+          }else{
+            console.log(validationResult); //if fail validation
+            const errors = Object.entries(errorList);
+            errors.forEach(indiv=>{
+              toast.error(`Error: ${indiv[0]}: ${indiv[1]}`);
+            })
+            
+          }
+          
+        }else{
+          toast.error(`Please fill in user name and password`)
         }
         console.log(btn)
       }

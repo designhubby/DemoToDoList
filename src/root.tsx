@@ -9,7 +9,7 @@ import { GetUserData, PostUserData } from './services/dataUser';
 import { LocalGetAllToDoList, LocalPostAllToDoList } from './services/LocalDataToDoList';
 import { RemoteGetToDoListData, RemotePostToDoListData } from './services/RemotedataToDoList';
 import { WebLogin } from './services/authUser';
-
+import toast, { Toaster } from 'react-hot-toast';
 
 const blankProfileData : IProfileData = {
   userName : "",
@@ -143,6 +143,7 @@ export const Root:FC<IRootProps>= (props: IRootProps) =>{
         </Modal>
         <App dataAccess={token ?RemoteGetToDoListData : LocalGetAllToDoList} dataPost= {token ? RemotePostToDoListData : LocalPostAllToDoList} forceRerender = {token} />
     
+        <Toaster />
       </>
     
     
