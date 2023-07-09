@@ -3,7 +3,7 @@ import React, {ChangeEvent, ChangeEventHandler, FC, JSXElementConstructor, React
 import { CButton, CCollapse, CContainer, CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle, CForm, CFormInput, CNavbar, CNavbarBrand, CNavbarNav, CNavbarToggler, CNavItem, CNavLink } from '@coreui/react';
 import { IFormInfo, guestForm, INavItems, itemType, navItemsGuest, profiledForm, profileItemsUser } from '../rootItems';
 import '@coreui/coreui/dist/css/coreui.min.css'
-import { Nullable, IAuthOutput } from './interfaces/interfaces';
+import { Nullable, IAuthOutput, IRemoteErrorDetails} from './interfaces/interfaces';
 import { CNavLinkProps } from '@coreui/react/dist/components/nav/CNavLink';
 import Joi from 'joi';
 import toast from 'react-hot-toast';
@@ -98,8 +98,9 @@ export function NavBarTop (props: INavBarTopProps) {
             try{
               const data = await props.getToken(userid, password); //if success validation
             }catch(err){
-              console.log(err);
-              toast.error("Login Failed");
+              const error = err as IRemoteErrorDetails;
+              console.log(error.data);
+              toast.error("Login Failed: " + error.data);
             }
           }else{
             console.log(validationResult); //if fail validation
