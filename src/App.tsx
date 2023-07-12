@@ -9,6 +9,7 @@ import { ToDoList } from './components/ToDoList';
 import { DragDropContext, DropResult } from '@hello-pangea/dnd';
 import { LocalGetAllToDoList, LocalPostAllToDoList } from './services/LocalDataToDoList';
 import { WebLogin } from './services/authUser';
+import * as _ from "lodash";
 
 export interface IAppProps {
   dataAccess : ()=>Promise<IUserToDoLists>,
@@ -24,36 +25,56 @@ const App: FC<IAppProps> = (props: IAppProps)=> {
     useEffect(
       ()=>{
       
+        console.log(`useeffect count.current`);
+        console.log(count.current);
+
       (async ()=>{
         const fetchedToDoList =  await props.dataAccess();
-        console.log(`props.dataAccess`);
-        console.log(props.dataAccess);
-        console.log(`fetchedToDoList`);
+        console.log(`props.dataAccess fetchedToDoList`);
         console.log(fetchedToDoList);
         if(fetchedToDoList){
+          console.log(`run fetchToDoList TRUETHY branch`)
           let  initialToDoList:ITaskInfoAll[];
           initialToDoList = fetchedToDoList.toDoListData;
           initialToDoList.forEach(indiv=>{
             indiv.startDate = indiv.startDate ? new Date(indiv.startDate ) : null;
             indiv.deadline = indiv.deadline ? new Date(indiv.deadline ) : null;
           })
-          count.current = 1
-          setTodoList(initialToDoList)
+          
+          
+          const changes = !_.isEqual(todoList, fetchedToDoList);
+          if(changes){
+            console.log(`changes found`)
+            console.log(`count.current`)
+            console.log(count.current)
+            console.log(`count.current ++`)
+            count.current ++;
+            console.log(`count.current`)
+            console.log(count.current)
+            setTodoList(initialToDoList)
+          }else{
+            console.log(`no changes found`)
+
+          }
         }
       })();   
     },[props.forceRerender])
 
-const runPost = async(data: ITaskInfoAll[])=>{
-  await props.dataPost(data);
-}
+  const runPost = async(data: ITaskInfoAll[])=>{
+    await props.dataPost(data);
+  }
+
   useEffect(() => {
     // storing input name
     console.log(`running 2nd useEffect`)
+    
+    console.log(`count.current`)
+    console.log(count.current)
     if(todoList.length>0 && count.current == 0){
       console.log("running runPost" + count.current)
       runPost(todoList)
     }else{
-      count.current = 0 
+      count.current -- 
       console.log("not running runPost")
     }
 
