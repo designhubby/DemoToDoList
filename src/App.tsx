@@ -3,30 +3,43 @@ import './App.scss';
 import { IDatePickerObj, ITask, ITaskInfoAll, ITaskInfoAllExtended, taskPriorityLevel, tReactChgEvent, InputFieldName, IUserToDoLists } from './Interfaces';
 import toast, { Toaster } from 'react-hot-toast';
 import "react-datepicker/dist/react-datepicker.css";
+import useCookies from "@js-smart/react-cookie-service";
 import { useCallback } from 'react';
 import TaskInputForm from './components/TaskInputForm';
 import { ToDoList } from './components/ToDoList';
 import { DragDropContext, DropResult } from '@hello-pangea/dnd';
 import { LocalGetAllToDoList, LocalPostAllToDoList } from './services/LocalDataToDoList';
-import { WebLogin } from './services/authUser';
+import { IsLoginCookie, WebLogin } from './services/authUser';
 import * as _ from "lodash";
 
 export interface IAppProps {
   dataAccess : ()=>Promise<IUserToDoLists>,
   dataPost: (todoData: ITaskInfoAll[])=>Promise<void>,
+  signOut : ()=> void
   forceRerender: string | null,
-
+  loggedin : boolean,
+  handleTimedOutSignOut : ()=>void;
 }
 const App: FC<IAppProps> = (props: IAppProps)=> {
-
+    const { getAllCookies, setCookie } = useCookies();
 
     const [todoList, setTodoList] = useState<ITaskInfoAll[]>([]);
-    const count = useRef(0);
+    const [todoListOri, setTodoListOri] = useState<ITaskInfoAll[]>([]);
+
+    const timedOutLogin = ():boolean=>{
+      if(!IsLoginCookie() && props.loggedin){
+        props.handleTimedOutSignOut();
+        return true
+      }else{
+        return false
+      }
+
+    }
     useEffect(
       ()=>{
       
-        console.log(`useeffect count.current`);
-        console.log(count.current);
+        /* console.log(`useeffect count.current`);
+        console.log(count.current); */
 
       (async ()=>{
         const fetchedToDoList =  await props.dataAccess();
@@ -44,14 +57,9 @@ const App: FC<IAppProps> = (props: IAppProps)=> {
           
           const changes = !_.isEqual(todoList, fetchedToDoList);
           if(changes){
-            console.log(`changes found`)
-            console.log(`count.current`)
-            console.log(count.current)
-            console.log(`count.current ++`)
-            count.current ++;
-            console.log(`count.current`)
-            console.log(count.current)
+
             setTodoList(initialToDoList)
+            setTodoListOri(initialToDoList)
           }else{
             console.log(`no changes found`)
 
@@ -67,15 +75,22 @@ const App: FC<IAppProps> = (props: IAppProps)=> {
   useEffect(() => {
     // storing input name
     console.log(`running 2nd useEffect`)
-    
-    console.log(`count.current`)
-    console.log(count.current)
-    if(todoList.length>0 && count.current == 0){
-      console.log("running runPost" + count.current)
-      runPost(todoList)
-    }else{
-      count.current -- 
-      console.log("not running runPost")
+    if(timedOutLogin()){
+      console.log(`timed out login`)
+      return
+    }
+
+    if(todoList.length>0 ){
+      const isEqual = _.isEqual(todoList, todoListOri);
+      if(!isEqual){
+        console.log("running runPost")
+        runPost(todoList)
+        setTodoListOri(todoList);
+      }else{
+        
+        console.log("not running runPost")
+      }
+      
     }
 
     
@@ -131,7 +146,12 @@ const App: FC<IAppProps> = (props: IAppProps)=> {
 
 
   const addTask= () : void =>{
-    
+    //Check isLogin
+    if(!IsLoginCookie() && props.loggedin){
+      props.handleTimedOutSignOut();
+      return 
+    }
+    //// !isLogin = modal ( you are logged out, return to Guest Mode )
     //check if e.target.name = enddate or startdate
     ///if enddate < startdate disregard
     if(currAllTaskInfo.startDate && currAllTaskInfo.deadline ){
@@ -163,6 +183,7 @@ const App: FC<IAppProps> = (props: IAppProps)=> {
       prioritylvl : currAllTaskInfo.prioritylvl,
     }
     setTodoList((prev)=>[...prev,newTask ])
+    
     setCurrAllTaskInfo(blanktask);
     toast.success('Successfully created!');
   }
@@ -203,8 +224,9 @@ const user ={
 }
 const handleOnTestBtn = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>)=>{
   console.log(`testing button`)
-  const result = await WebLogin(user);
-  console.log(result);
+  setCookie('token', `sdfsdff`);
+setCookie('isLoggedIn', 'true');
+  console.log(JSON.stringify(getAllCookies()))
 
 }
 

@@ -7,6 +7,7 @@ import { Nullable, IAuthOutput, IRemoteErrorDetails} from './interfaces/interfac
 import { CNavLinkProps } from '@coreui/react/dist/components/nav/CNavLink';
 import Joi from 'joi';
 import toast from 'react-hot-toast';
+import { TpRootFunctions } from './interfaces/rootFunctions';
 
 
 
@@ -15,6 +16,7 @@ export interface INavBarTopProps {
     getToken: (username: string, password: string) => Promise<void>,
     signOut: ()=>void,
     handleOnClick: (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement, MouseEvent>, id:string)=>void,
+    functionInject: TpRootFunctions,
 }
 interface INavBarFunctions{
   onFieldChange: (e: ChangeEvent<HTMLInputElement>) => void,
@@ -88,7 +90,7 @@ export function NavBarTop (props: INavBarTopProps) {
 
       
       const btn = document.activeElement?.getAttribute("name");
-      if(btn == "btnSignIn"){
+      if(btn == "btnSignIn"){ // fix magic string?
         console.log(e.target)
         if(userid && password){
           //validate fields
@@ -115,6 +117,11 @@ export function NavBarTop (props: INavBarTopProps) {
           toast.error(`Please fill in user name and password`)
         }
         console.log(btn)
+      }
+
+      if(btn == "btnRegister"){ // fix magic string?
+        console.log("btnRegister")
+        props.functionInject.setModalShow(true);
       }
     }
 

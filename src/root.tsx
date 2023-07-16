@@ -1,5 +1,5 @@
 import React, {FC, useEffect, useState} from 'react';
-
+import useCookies from "@js-smart/react-cookie-service";
 import { NavBarTop } from './components/navbartop';
 import App from './App';
 import useToken from './components/hooks/useToken';
@@ -8,8 +8,9 @@ import { IProfileData, Profile } from './components/profile';
 import { GetUserData, PostUserData } from './services/dataUser';
 import { LocalGetAllToDoList, LocalPostAllToDoList } from './services/LocalDataToDoList';
 import { RemoteGetToDoListData, RemotePostToDoListData } from './services/RemotedataToDoList';
-import { WebLogin } from './services/authUser';
+import { WebLogin, WebLogOut } from './services/authUser';
 import toast, { Toaster } from 'react-hot-toast';
+import { ModalSignedOut } from './components/modalSignedout';
 
 const blankProfileData : IProfileData = {
   userName : "",
@@ -29,10 +30,12 @@ export interface IRootProps {
 ///Default: Guest
 ///
 export const Root:FC<IRootProps>= (props: IRootProps) =>{
-    //token hook
+    const { check, deleteCookie, deleteAllCookies  } = useCookies();  
+  //token hook
     const {token, setToken} = useToken();
     const [loggedin, setLoggedin] = useState<boolean>(false);
     const [modalShow, setModalShow] = useState<boolean>(false);
+    const [modalShowSignedOutNotice, setModalShowSignedOutNotice] = useState<boolean>(false);
 
     const getUserData = async ()=>{
       const userData = await GetUserData();
@@ -100,9 +103,19 @@ export const Root:FC<IRootProps>= (props: IRootProps) =>{
       }
     }
 
-    const signOut = (): void=>{
+    const signOut = async (): Promise<void>=>{
       console.log("running Signout")
+      WebLogOut()
+      deleteCookie('Todo_ExpiryData')
       setToken(null);
+    }
+
+    const handleTimedOutSignOut = () =>{
+      //if loggedin  is true, but cookie is missing = show: 
+      // use another setstate to record last mode?
+      
+      signOut();
+      setModalShowSignedOutNotice(true)
     }
 
     const handleOnSave= async():Promise<void>=>{
@@ -116,6 +129,7 @@ export const Root:FC<IRootProps>= (props: IRootProps) =>{
       handleProfileFieldChange: handleProfileFieldChange,
       getUserData: getUserData,
       cancelUserDataChange: cancelUserDataChange,
+      setModalShow: setModalShow,
     }
 
     //useEffect for authen stat
@@ -136,12 +150,13 @@ export const Root:FC<IRootProps>= (props: IRootProps) =>{
 
     
       <>
-        <NavBarTop loggedIn = {loggedin} getToken = {authenticateGetToken} signOut={signOut} handleOnClick={handleOnClick}/>
+        <NavBarTop loggedIn = {loggedin} getToken = {authenticateGetToken} signOut={signOut} handleOnClick={handleOnClick} functionInject={rootFunctions}/>
         <h1>my Token {token}</h1>
         <Modal visible = {modalShow} title ="User Profile" functionInject={rootFunctions}>
           {(functionsInjected)=> <Profile  profileData = {formData} func={rootFunctions} />}
         </Modal>
-        <App dataAccess={token ?RemoteGetToDoListData : LocalGetAllToDoList} dataPost= {token ? RemotePostToDoListData : LocalPostAllToDoList} forceRerender = {token} />
+        <ModalSignedOut visible = {modalShowSignedOutNotice} title ="Signed Out" setModalShowSignedOutNotice={setModalShowSignedOutNotice} />
+        <App dataAccess={token ?RemoteGetToDoListData : LocalGetAllToDoList} dataPost= {token ? RemotePostToDoListData : LocalPostAllToDoList} signOut= {signOut} loggedin={loggedin} handleTimedOutSignOut = {handleTimedOutSignOut} forceRerender = {token} />
     
         <Toaster />
       </>

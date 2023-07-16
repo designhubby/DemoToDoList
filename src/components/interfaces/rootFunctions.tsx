@@ -6,4 +6,5 @@ export type TpRootFunctions = {
     handleProfileFieldChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     getUserData: () => Promise<void>;
     cancelUserDataChange: () => void;
+    setModalShow: React.Dispatch<React.SetStateAction<boolean>>;
 };
