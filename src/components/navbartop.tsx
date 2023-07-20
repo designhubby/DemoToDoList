@@ -121,7 +121,7 @@ export function NavBarTop (props: INavBarTopProps) {
 
       if(btn == "btnRegister"){ // fix magic string?
         console.log("btnRegister")
-        props.functionInject.setModalShow(true);
+        props.functionInject.setModalShowRegister(true);
       }
     }
 

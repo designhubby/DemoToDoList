@@ -11,6 +11,7 @@ import { DragDropContext, DropResult } from '@hello-pangea/dnd';
 import { LocalGetAllToDoList, LocalPostAllToDoList } from './services/LocalDataToDoList';
 import { IsLoginCookie, WebLogin } from './services/authUser';
 import * as _ from "lodash";
+import { TpRootFunctions } from './components/interfaces/rootFunctions';
 
 export interface IAppProps {
   dataAccess : ()=>Promise<IUserToDoLists>,
@@ -19,6 +20,7 @@ export interface IAppProps {
   forceRerender: string | null,
   loggedin : boolean,
   handleTimedOutSignOut : ()=>void;
+  functionInject: TpRootFunctions;
 }
 const App: FC<IAppProps> = (props: IAppProps)=> {
     const { getAllCookies, setCookie } = useCookies();
@@ -26,15 +28,7 @@ const App: FC<IAppProps> = (props: IAppProps)=> {
     const [todoList, setTodoList] = useState<ITaskInfoAll[]>([]);
     const [todoListOri, setTodoListOri] = useState<ITaskInfoAll[]>([]);
 
-    const timedOutLogin = ():boolean=>{
-      if(!IsLoginCookie() && props.loggedin){
-        props.handleTimedOutSignOut();
-        return true
-      }else{
-        return false
-      }
-
-    }
+    const blankToDoListData: ITaskInfoAll[]= []
     useEffect(
       ()=>{
       
@@ -64,6 +58,10 @@ const App: FC<IAppProps> = (props: IAppProps)=> {
             console.log(`no changes found`)
 
           }
+        }else{
+          console.log("blank profile")
+          setTodoList(blankToDoListData);
+          setTodoListOri(blankToDoListData);
         }
       })();   
     },[props.forceRerender])
@@ -75,7 +73,7 @@ const App: FC<IAppProps> = (props: IAppProps)=> {
   useEffect(() => {
     // storing input name
     console.log(`running 2nd useEffect`)
-    if(timedOutLogin()){
+    if(props.functionInject.isLoginTimedOut()){
       console.log(`timed out login`)
       return
     }
@@ -147,8 +145,7 @@ const App: FC<IAppProps> = (props: IAppProps)=> {
 
   const addTask= () : void =>{
     //Check isLogin
-    if(!IsLoginCookie() && props.loggedin){
-      props.handleTimedOutSignOut();
+    if(props.functionInject.isLoginTimedOut()){
       return 
     }
     //// !isLogin = modal ( you are logged out, return to Guest Mode )

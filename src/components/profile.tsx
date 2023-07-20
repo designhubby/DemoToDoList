@@ -5,9 +5,10 @@ import { profiledForm } from './../rootItems';
 import { TpRootFunctions } from './interfaces/rootFunctions';
 
 export interface IProfileData {
-    userName: string,
+    username: string,
     email: string,
     password: string,
+    passwordConfirm? : string,
     firstName: string,
     lastName: string,
 
@@ -16,13 +17,26 @@ export interface IProfileData {
 export interface IProfileProps{
     func :  TpRootFunctions,
     profileData: IProfileData,
+    userNameReadOnly: boolean,
     
 }
 
-export function Profile ({ profileData, func}: IProfileProps) {
-    
+export function Profile ({ profileData, func, userNameReadOnly}: IProfileProps) {
+    const [pwdConfirm, setPwdConfirm] = useState<string>();
+
     useEffect(()=>{
-        func.getUserData()
+        console.log(profileData)
+        if(func.isLoggedin){
+            if(!func.isLoginTimedOut()){
+            console.log(`running func.getUserData()`)
+            func.getUserData()
+        }else{
+            console.log(`skipped getUserData`);
+        }
+        }else{
+            console.log(`is not logged in`)
+        }
+
     },[])
 
   return (
@@ -34,7 +48,7 @@ export function Profile ({ profileData, func}: IProfileProps) {
 
             <CCol sm={10}>
 
-                <CFormInput type="text" id="staticUserName" defaultValue={profileData.userName} readOnly plainText/>
+                <CFormInput type="text" name="username" id="staticUserName" onChange={(e)=>func.handleProfileFieldChange(e)} value={profileData.username}  readOnly={userNameReadOnly} plainText={userNameReadOnly}/>
 
             </CCol>
 
@@ -74,8 +88,21 @@ export function Profile ({ profileData, func}: IProfileProps) {
                 <CFormInput name="password" onChange={(e)=>func.handleProfileFieldChange(e)} type="password" id="inputPassword" value ={profileData.password}/>
 
             </CCol>
+            
+
 
         </CRow>
+        {!userNameReadOnly && <>
+                <CRow className="mb-3">
+
+                    <CFormLabel htmlFor="inputPasswordConfirm" className="col-sm-2 col-form-label">Password</CFormLabel>
+                        <CCol sm={10}>
+                            <CFormInput name="passwordConfirm" onChange={(e)=>func.handleProfileFieldChange(e)} type="password" id="inputPasswordConfirm" value ={pwdConfirm}/> 
+                        </CCol>
+                        </CRow>
+                </>
+                
+        }
         </>
     </div>
   );

@@ -2,7 +2,7 @@ import { rejects } from "assert";
 import { IProfileData } from "../components/profile";
 
 let mockUserProfileData : IProfileData = {
-    userName : "username123",
+    username : "username123",
     email: "username123@rogers.ca",
     password:"pwdusername123",
     firstName: "firstName123",

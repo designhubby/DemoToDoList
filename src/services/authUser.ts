@@ -1,5 +1,6 @@
 import useCookies from "@js-smart/react-cookie-service";
 import axios, { AxiosInstance } from "axios";
+import { IProfileData } from "../components/profile";
 
 const controllerURL= '/AuthManagement';
 
@@ -10,7 +11,7 @@ export interface IWebUserLoginDto{
 
 export async function WebLogin(webuserLoginDto: IWebUserLoginDto, axiosInstance :AxiosInstance = axios) {
     const results = await axiosInstance.post(`${controllerURL}/Login`, webuserLoginDto).then(response=> response.data);
-    console.log(`return from Auth`);
+    console.log(`return from WebLogin`);
     console.log(results);
     return results;
   }
@@ -28,7 +29,26 @@ export function IsLoginCookie(){
 
 export async function WebLogOut( axiosInstance :AxiosInstance = axios){
     const results = await axiosInstance.post(`${controllerURL}/Logout`).then(response=> response.data);
-    console.log(`return from Auth`);
+    console.log(`return from WebLogOut`);
     console.log(results);
     return results;
+}
+
+export async function WebRegister( profileData: IProfileData, axiosInstance : AxiosInstance = axios, ){
+    const results = await axiosInstance.post(`${controllerURL}/Register`, profileData).then(response => response.data);
+    console.log(`return from WebRegister`);
+    console.log(results);
+    return results;
+}
+
+export async function GetUser(axiosInstance : AxiosInstance = axios){
+    const results = await axiosInstance.get(`${controllerURL}/GetUser`).then(response => response.data);
+    console.log(`return from GetUser`);
+    console.log(results);
+    return results;
+}
+
+export async function EditUser(profileData: IProfileData, axiosInstance: AxiosInstance = axios): Promise<IProfileData>{
+    const result = await axiosInstance.post(`${controllerURL}/EditUser`, profileData).then(response=>response.data);
+    return result;
 }
