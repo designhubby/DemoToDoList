@@ -231,6 +231,7 @@ setCookie('isLoggedIn', 'true');
     <div className="App">
       <div className='header'>
         <h1>ToDo List {process.env.REACT_APP_BaseURL}</h1>
+        <h1>ToDo List {process.env.REACT_APP_EnvFileUsed}</h1>
         <TaskInputForm currAllTaskInfo={currAllTaskInfo} addTask={addTask} handleChangeAll = {handleChangeAll}/>
         <button type ="button" onClick={(e)=>handleOnTestBtn(e)}>button</button>
         
@@ -251,7 +252,7 @@ setCookie('isLoggedIn', 'true');
           </div>
         </DragDropContext>
       </div>
-      <div className="devstate">{process.env.NODE_ENV} </div>
+      <div className="devstate">{process.env.NODE_ENV}</div>
     </div>
   );
 }
