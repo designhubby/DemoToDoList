@@ -10,13 +10,21 @@ export interface IWebUserLoginDto{
 }
 
 export async function WebLogin(webuserLoginDto: IWebUserLoginDto, axiosInstance :AxiosInstance = axios) {
-    const results = await axiosInstance.post(`${controllerURL}/Login`, webuserLoginDto).then(response=> response.data);
+    const results = await axiosInstance.post(`${controllerURL}/Login`, webuserLoginDto, {
+        //AxiosRequestConfig parameter
+        withCredentials: true //correct
+      }).then(response=> response.data);
     console.log(`return from WebLogin`);
     console.log(results);
     return results;
   }
 
-export function IsLoginCookie(){
+  export async function IsLoggedInValid(axiosInstance :AxiosInstance = axios){
+    const results = await axiosInstance.post(`${controllerURL}/AuthenticationStatus`).then(response => response.data);
+    return results;
+  }
+
+export function IsLoginCookie(){ //no longer in use due to CORS issues with cookies
     const { check } = useCookies();
     console.log(`checking islogin`)
     if(check('Todo_ExpiryData')){

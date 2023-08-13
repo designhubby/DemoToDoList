@@ -8,7 +8,7 @@ import { IProfileData, Profile } from './components/profile';
 import { GetUserData, PostUserData } from './services/dataUser';
 import { LocalGetAllToDoList, LocalPostAllToDoList } from './services/LocalDataToDoList';
 import { RemoteGetToDoListData, RemotePostToDoListData } from './services/RemotedataToDoList';
-import { EditUser, GetUser, IsLoginCookie, WebLogin, WebLogOut, WebRegister } from './services/authUser';
+import { EditUser, GetUser, IsLoggedInValid, IsLoginCookie, WebLogin, WebLogOut, WebRegister } from './services/authUser';
 import toast, { Toaster } from 'react-hot-toast';
 import { ModalSignedOut } from './components/modalSignedout';
 import { CButton } from '@coreui/react';
@@ -129,8 +129,8 @@ export const Root:FC<IRootProps>= (props: IRootProps) =>{
       setModalShowSignedOutNotice(true)
     }
     const isLoginTimedOut = ():boolean=>{
-      if(!IsLoginCookie() && isLoggedin){
-        //handleTimedOutSignOut();
+      if(!IsLoggedInValid() && isLoggedin){
+        handleTimedOutSignOut();
         console.log(`isLoginTimedOut true`)
         return true
       }else{
