@@ -1,4 +1,5 @@
 import { CButton, CDropdownItem } from "@coreui/react";
+import { INavBarFunctions } from "./components/navbartop";
 
 export enum itemType  {
     Button = "Button",
@@ -16,7 +17,7 @@ export interface INavItems{
     label: string;
     type: itemType;
     form: boolean;
-    doSomething?: (index:number)=> JSX.Element;
+    doSomething?: (index:number, func : INavBarFunctions)=> JSX.Element;
 
 }
 export interface IFormInfo{
@@ -42,8 +43,8 @@ export const navItemsGuest: INavItems[] = [
         label: "Sign In",
         type: itemType.Button,
         form: true,
-        doSomething: (index:number)=>(
-            <CButton key={index} type ="submit" name = "btnSignIn" color ="success" variant="outline">{navItemsGuest[2].label}</CButton>
+        doSomething: (index:number, func)=>(
+            <CButton key={index} ref={func.refBtnSignIn} className='btnSignIn' type ="submit" name = "btnSignIn" color ="success" variant="outline">{navItemsGuest[2].label}</CButton>
         ),
 
     },{
@@ -52,7 +53,7 @@ export const navItemsGuest: INavItems[] = [
         type: itemType.Button,
         form: true,
         doSomething: (index:number)=>(
-            <CButton key={index} type ="submit" name = "btnRegister" color ="success" variant="outline">{navItemsGuest[3].label}</CButton>
+            <CButton key={index} className='btnRegister' type ="submit" name = "btnRegister" color ="success" variant="outline">{navItemsGuest[3].label}</CButton>
         ),
     },
 ]

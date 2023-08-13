@@ -1,4 +1,4 @@
-import React, {ChangeEvent, ChangeEventHandler, FC, JSXElementConstructor, ReactElement, useState} from 'react';
+import React, {ChangeEvent, ChangeEventHandler, FC, JSXElementConstructor, ReactElement, useRef, useState} from 'react';
 
 import { CButton, CCollapse, CContainer, CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle, CForm, CFormInput, CNavbar, CNavbarBrand, CNavbarNav, CNavbarToggler, CNavItem, CNavLink } from '@coreui/react';
 import { IFormInfo, guestForm, INavItems, itemType, navItemsGuest, profiledForm, profileItemsUser } from '../rootItems';
@@ -18,10 +18,11 @@ export interface INavBarTopProps {
     handleOnClick: (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement, MouseEvent>, id:string)=>void,
     functionInject: TpRootFunctions,
 }
-interface INavBarFunctions{
+export interface INavBarFunctions{
   onFieldChange: (e: ChangeEvent<HTMLInputElement>) => void,
   onSubmit : (e: React.FormEvent<HTMLFormElement>) => Promise<void>,
   handleOnClick :  (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement, MouseEvent>, id:string) => void,
+  refBtnSignIn: React.RefObject<HTMLButtonElement>,
 }
 
 const joiValidationSchema = Joi.object().keys({
@@ -35,6 +36,7 @@ export function NavBarTop (props: INavBarTopProps) {
     const [visible, setVisible] = React.useState(false)
     const [errorList, setErrorList] = useState({})
 
+    const refBtnSignIn = useRef<HTMLButtonElement>(null);
     const [credentials, setCredentials] = useState(
       {
         userid : "",
@@ -91,7 +93,11 @@ export function NavBarTop (props: INavBarTopProps) {
       
       const btn = document.activeElement?.getAttribute("name");
       if(btn == "btnSignIn"){ // fix magic string?
+
         console.log(e.target)
+        if(refBtnSignIn.current){
+          refBtnSignIn.current.disabled = true
+        }
         if(userid && password){
           //validate fields
           const validationResult = validationSuccess(userid, password)
@@ -131,6 +137,7 @@ export function NavBarTop (props: INavBarTopProps) {
       onFieldChange: onFieldChange,
       onSubmit : onSubmit,
       handleOnClick: props.handleOnClick,
+      refBtnSignIn : refBtnSignIn,
     }
 
 
@@ -175,7 +182,7 @@ const NavElementsOutput = (Props: IFormInfo, funct: INavBarFunctions): JSX.Eleme
                 return <CFormInput name={ItemProp.id} onChange={(e)=>funct.onFieldChange(e)} type="text" className='me-2' placeholder={ItemProp.label}key={index}/>
             }
             if(ItemProp.type == itemType.Button && ItemProp.doSomething){
-                return ItemProp.doSomething(index)
+                return ItemProp.doSomething(index, funct)
             }
             if(ItemProp.type == itemType.PasswordField){
                 return <CFormInput onChange={(e)=>funct.onFieldChange(e)} type ="password" name={ItemProp.id} placeholder={ItemProp.label}key={index}/>
