@@ -3,6 +3,7 @@ import React, {ChangeEvent, ChangeEventHandler, FC, JSXElementConstructor, React
 import { CButton, CCollapse, CContainer, CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle, CForm, CFormInput, CNavbar, CNavbarBrand, CNavbarNav, CNavbarToggler, CNavItem, CNavLink } from '@coreui/react';
 import { IFormInfo, guestForm, INavItems, itemType, navItemsGuest, profiledForm, profileItemsUser } from '../rootItems';
 import '@coreui/coreui/dist/css/coreui.min.css'
+import 'bootstrap/dist/css/bootstrap.min.css'
 import { Nullable, IAuthOutput, IRemoteErrorDetails} from './interfaces/interfaces';
 import { CNavLinkProps } from '@coreui/react/dist/components/nav/CNavLink';
 import Joi from 'joi';
@@ -151,8 +152,8 @@ export function NavBarTop (props: INavBarTopProps) {
               onClick={() => setVisible(!visible)}
             />
             <CCollapse className="navbar-collapse" visible={visible}>
-              <CNavbarBrand href="#">Hidden brand</CNavbarBrand>
-              <CNavbarNav className="me-auto mb-2 mb-lg-0">
+              <CNavbarBrand href="#">ToDo List</CNavbarBrand>
+              <CNavbarNav className="d-flex me-auto mb-2 mb-lg-0">
                 <CNavItem>
                   <CNavLink href="#" active>
                     Home
@@ -161,12 +162,9 @@ export function NavBarTop (props: INavBarTopProps) {
                 <CNavItem>
                   <CNavLink href="#">Link</CNavLink>
                 </CNavItem>
-                <CNavItem>
-                  <CNavLink href="#" disabled>
-                    Disabled
-                  </CNavLink>
-                </CNavItem>
-                {NavElementsOutput( props.loggedIn ? profiledForm:  guestForm, funct)}
+                <CNavItem className='ms-auto'>
+                    {NavElementsOutput( props.loggedIn ? profiledForm:  guestForm, funct)}
+                    </CNavItem>
               </CNavbarNav>
             </CCollapse>
           </CContainer>
@@ -199,7 +197,7 @@ const NavElementsOutput = (Props: IFormInfo, funct: INavBarFunctions): JSX.Eleme
         const navLinkSet = Props.formData.filter(indiv=> indiv.type == itemType.NavLink && indiv.form == false);
         let results: React.ReactElement[] = [];
 
-        if (navLinkSet) {
+        if (navLinkSet.length > 0) {
           results.push(
             <>
             {navLinkSet.map((indiv, i) => 
@@ -209,7 +207,7 @@ const NavElementsOutput = (Props: IFormInfo, funct: INavBarFunctions): JSX.Eleme
             </>
           )
         }
-        if(dropDownSet){
+        if(dropDownSet.length>0){
             results.push(
                 <CDropdown  variant="nav-item" popper={false}>
                     <CDropdownToggle>{Props.title}</CDropdownToggle>
@@ -220,8 +218,8 @@ const NavElementsOutput = (Props: IFormInfo, funct: INavBarFunctions): JSX.Eleme
                         </CDropdownMenu>
                 </CDropdown>)
         }
-        if(formSet){
-            results.push(<CForm  name={Props.formName} onSubmit={(e)=>funct.onSubmit(e)} className="d-flex">
+        if(formSet.length > 0){
+            results.push(<CForm   name={Props.formName} onSubmit={(e)=>funct.onSubmit(e)} className="d-flex">
                 {formSet.map((indiv, i)=>{
                     return renderElement(indiv, i)
                 })}
