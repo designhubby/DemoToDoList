@@ -44,12 +44,20 @@ body{
 
 .header button{
   width: 70px;
-  height: 150px;
+  height: 160px;
   border: none;
   border-bottom-right-radius: 8px;
   border-top-right-radius: 8px;
   padding-left: 10px;
   cursor: pointer;
+}
+.header .prioritysel {
+  width: 200px;
+  height: 40px;
+  border-bottom-left-radius: 8px;
+  border-top-left-radius: 8px;
+  padding-left: 10px;
+  font-size: 17px;
 }
 
 .allLists{

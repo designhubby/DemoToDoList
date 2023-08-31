@@ -22,8 +22,8 @@ export const PrioritySelector = <T extends Record<string, string>,> ({
       })
     }
   return (
-    <div>
-        <select name={name} value = {currentValue?.toString()} onChange={(e)=>handleChange(e )}>
+    <div className='f '>
+        <select className='prioritysel ' name={name} value = {currentValue?.toString()} onChange={(e)=>handleChange(e )}>
             {allPrioritySelectOptions()}
         </select>
     </div>

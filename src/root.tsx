@@ -249,7 +249,7 @@ export const Root:FC<IRootProps>= (props: IRootProps) =>{
     
       <>
         <NavBarTop loggedIn = {isLoggedin} getToken = {authenticateGetToken} signOut={signOut} handleOnClick={handleOnClick} functionInject={rootFunctions}/>
-        <h1 onClick={(e)=>handleOnTesth1(e)}>my Token {modalShowRegister}</h1>
+        
         <Modal visible = {modalShow} title ="User Profile" functionInject={rootFunctions} handleOnClose = {cancelUserDataChange}>
             <Profile data-role='main'  profileData = {formData} func={rootFunctions} userNameReadOnly = {true}/>
             <CButton data-role='footerbutton' onClick={() => cancelUserDataChange()} color="secondary">Close</CButton>

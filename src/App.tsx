@@ -215,10 +215,6 @@ const App: FC<IAppProps> = (props: IAppProps)=> {
     setTodoList(newItems);
 
 }
-const user ={
-  "email": "bell6@rogers.com",
-  "password": "bell123bell"
-}
 const handleOnTestBtn = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>)=>{
   console.log(`testing button`)
   setCookie('token', `sdfsdff`);
@@ -231,7 +227,7 @@ setCookie('isLoggedIn', 'true');
     <div className="App">
       <div className='header'>
         <TaskInputForm currAllTaskInfo={currAllTaskInfo} addTask={addTask} handleChangeAll = {handleChangeAll}/>
-        <button type ="button" onClick={(e)=>handleOnTestBtn(e)}>button</button>
+        
         
       </div>
       <div className='allLists'>

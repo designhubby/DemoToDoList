@@ -154,18 +154,9 @@ export function NavBarTop (props: INavBarTopProps) {
             <CCollapse className="navbar-collapse" visible={visible}>
               <CNavbarBrand href="#">ToDo List</CNavbarBrand>
               <CNavbarNav className="d-flex me-auto mb-2 mb-lg-0">
-                <CNavItem>
-                  <CNavLink href="#" active>
-                    Home
-                  </CNavLink>
-                </CNavItem>
-                <CNavItem>
-                  <CNavLink href="#">Link</CNavLink>
-                </CNavItem>
-                <CNavItem className='ms-auto'>
-                    {NavElementsOutput( props.loggedIn ? profiledForm:  guestForm, funct)}
-                    </CNavItem>
+                
               </CNavbarNav>
+              {NavElementsOutput( props.loggedIn ? profiledForm:  guestForm, funct)}
             </CCollapse>
           </CContainer>
         </CNavbar>
@@ -177,13 +168,13 @@ const NavElementsOutput = (Props: IFormInfo, funct: INavBarFunctions): JSX.Eleme
     const renderElement = (ItemProp:INavItems, index: number)=>{
         
             if(ItemProp.type == itemType.TextField){
-                return <CFormInput name={ItemProp.id} onChange={(e)=>funct.onFieldChange(e)} type="text" className='me-2' placeholder={ItemProp.label}key={index}/>
+                return <div><CFormInput name={ItemProp.id} onChange={(e)=>funct.onFieldChange(e)} type="text" className='me-2' placeholder={ItemProp.label}key={index}/></div>
             }
             if(ItemProp.type == itemType.Button && ItemProp.doSomething){
-                return ItemProp.doSomething(index, funct)
+                return <div>{ItemProp.doSomething(index, funct)}</div>
             }
             if(ItemProp.type == itemType.PasswordField){
-                return <CFormInput onChange={(e)=>funct.onFieldChange(e)} type ="password" name={ItemProp.id} placeholder={ItemProp.label}key={index}/>
+                return <div><CFormInput onChange={(e)=>funct.onFieldChange(e)} type ="password" name={ItemProp.id} placeholder={ItemProp.label}key={index}/></div>
             }
             if(ItemProp.type == itemType.DropDownItem){
                 return <CDropdownItem key={index} onClick={(e)=>funct.handleOnClick(e, ItemProp.id)} href="#">{ItemProp.label}</CDropdownItem>
@@ -219,7 +210,7 @@ const NavElementsOutput = (Props: IFormInfo, funct: INavBarFunctions): JSX.Eleme
                 </CDropdown>)
         }
         if(formSet.length > 0){
-            results.push(<CForm   name={Props.formName} onSubmit={(e)=>funct.onSubmit(e)} className="d-flex">
+            results.push(<CForm className="d-flex input-group w-auto"  name={Props.formName} onSubmit={(e)=>funct.onSubmit(e)}>
                 {formSet.map((indiv, i)=>{
                     return renderElement(indiv, i)
                 })}
