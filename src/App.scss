@@ -16,10 +16,16 @@ body{
   flex: 30%;
   background-color: tomato;
   width: 100%;
+  height: fit-content;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.header .inputForm_title{
+  font-size: 2rem;
+  font-weight: bold;
 }
 .header .inputForm{
   display: flex;

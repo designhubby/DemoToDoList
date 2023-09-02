@@ -4,6 +4,7 @@ import { CButton, CCollapse, CContainer, CDropdown, CDropdownItem, CDropdownMenu
 import { IFormInfo, guestForm, INavItems, itemType, navItemsGuest, profiledForm, profileItemsUser } from '../rootItems';
 import '@coreui/coreui/dist/css/coreui.min.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import { Nullable, IAuthOutput, IRemoteErrorDetails} from './interfaces/interfaces';
 import { CNavLinkProps } from '@coreui/react/dist/components/nav/CNavLink';
 import Joi from 'joi';
@@ -152,9 +153,14 @@ export function NavBarTop (props: INavBarTopProps) {
               onClick={() => setVisible(!visible)}
             />
             <CCollapse className="navbar-collapse" visible={visible}>
+            <i className="bi bi-robot"></i>
               <CNavbarBrand href="#">ToDo List</CNavbarBrand>
               <CNavbarNav className="d-flex me-auto mb-2 mb-lg-0">
-                
+                <CNavItem>
+                  <CNavLink href="#" active>
+                    Home
+                  </CNavLink>
+                </CNavItem>
               </CNavbarNav>
               {NavElementsOutput( props.loggedIn ? profiledForm:  guestForm, funct)}
             </CCollapse>
@@ -200,7 +206,7 @@ const NavElementsOutput = (Props: IFormInfo, funct: INavBarFunctions): JSX.Eleme
         }
         if(dropDownSet.length>0){
             results.push(
-                <CDropdown  variant="nav-item" popper={false}>
+                <CDropdown  popper={false}>
                     <CDropdownToggle>{Props.title}</CDropdownToggle>
                     <CDropdownMenu>
                         {dropDownSet.map((indiv, i)=>{

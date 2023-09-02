@@ -19,7 +19,9 @@ const TaskInputForm:FC<ITaskInputFormProps> = ({currAllTaskInfo, handleChangeAll
   
   return (
     <>
+    <div className='inputForm_title'>My Task</div>
     <div className ='inputForm'>
+      
       <div className = 'inputContainer'>
         <input name ={InputFieldName.taskName}  type ="text" value={currAllTaskInfo.taskName || ""} onChange={handleChangeAll} placeholder='Task...'/>
         <DatePicker
