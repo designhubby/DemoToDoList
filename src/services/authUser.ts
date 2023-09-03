@@ -19,7 +19,7 @@ export async function WebLogin(webuserLoginDto: IWebUserLoginDto, axiosInstance 
     return results;
   }
 
-  export async function IsLoggedInValid(axiosInstance :AxiosInstance = axios){
+  export async function IsLoggedInValid(axiosInstance :AxiosInstance = axios): Promise<boolean>{
     const results = await axiosInstance.post(`${controllerURL}/AuthenticationStatus`).then(response => response.data);
     return results;
   }

@@ -1,4 +1,4 @@
-import React, {ChangeEvent, ChangeEventHandler, FC, JSXElementConstructor, ReactElement, useRef, useState} from 'react';
+import React, {ChangeEvent, ChangeEventHandler, FC, JSXElementConstructor, ReactElement, useEffect, useRef, useState} from 'react';
 
 import { CButton, CCollapse, CContainer, CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle, CForm, CFormInput, CNavbar, CNavbarBrand, CNavbarNav, CNavbarToggler, CNavItem, CNavLink } from '@coreui/react';
 import { IFormInfo, guestForm, INavItems, itemType, navItemsGuest, profiledForm, profileItemsUser } from '../rootItems';
@@ -10,10 +10,13 @@ import { CNavLinkProps } from '@coreui/react/dist/components/nav/CNavLink';
 import Joi from 'joi';
 import toast from 'react-hot-toast';
 import { TpRootFunctions } from './interfaces/rootFunctions';
+import { IsLoggedInValid } from '../services/authUser';
+import { IProfileData } from './profile';
 
 
 
 export interface INavBarTopProps {
+    profileData: IProfileData,
     loggedIn: boolean,
     getToken: (username: string, password: string) => Promise<void>,
     signOut: ()=>void,
@@ -38,12 +41,29 @@ export function NavBarTop (props: INavBarTopProps) {
     const [visible, setVisible] = React.useState(false)
     const [errorList, setErrorList] = useState({})
 
+    const [avatarMouseOverActiveClassName, setAvatarMouseOverActiveClassName] = useState('');
+    const [avatarIconType, setAvatarIconType] = useState<string>('');
+    const [avatarUserName, setAvatarUserName] = useState('');
+
     const refBtnSignIn = useRef<HTMLButtonElement>(null);
     const [credentials, setCredentials] = useState(
       {
         userid : "",
         password: ""
       });
+    const loggedInBootstrapIconClassName = 'bi bi-person-check'
+    const loggedOutBootstrapIconClassName = 'bi bi-person-fill-slash'
+
+      useEffect(()=>{
+        async function fetchLoginState(){
+          const loginState = await IsLoggedInValid();
+          if(loginState){
+            setAvatarIconType(loggedInBootstrapIconClassName);
+          }else{
+            setAvatarIconType(loggedOutBootstrapIconClassName);
+          }
+        }
+      },[]);
     
     const showConsole = ()=>{
       console.log("me clicked");
@@ -141,6 +161,25 @@ export function NavBarTop (props: INavBarTopProps) {
       handleOnClick: props.handleOnClick,
       refBtnSignIn : refBtnSignIn,
     }
+    const handleOnMouseEnter = async ()=>{
+      setAvatarMouseOverActiveClassName('active');
+      //check if logged in
+      ///true: Show - Network Icon : User Name 
+      ///false: Show - Guest Icon : Guest Mode (mouse over modal: description)
+      const username = props.profileData.username
+      
+      if(await IsLoggedInValid()){
+        setAvatarUserName(`Welcome ${username}`);
+        setAvatarIconType(loggedInBootstrapIconClassName);
+
+      }else{
+        setAvatarUserName(`Guest Mode`);
+        setAvatarIconType(loggedOutBootstrapIconClassName);
+      }
+    }
+    const handleOnMouseLeave = ()=>{
+      setAvatarMouseOverActiveClassName('');
+    }
 
 
   return (
@@ -153,7 +192,12 @@ export function NavBarTop (props: INavBarTopProps) {
               onClick={() => setVisible(!visible)}
             />
             <CCollapse className="navbar-collapse" visible={visible}>
-            <i className="bi bi-robot"></i>
+            <div className='navbar_iconcontainer'>
+              <div className={`navbar_iconcontainer_floating ${avatarMouseOverActiveClassName}`} onMouseEnter={()=>handleOnMouseEnter()} onMouseLeave={()=>handleOnMouseLeave()}>
+                <i className={avatarIconType}></i>
+                <div className={`navbar_icontext ${avatarMouseOverActiveClassName}`}>{avatarUserName}!</div>
+              </div>
+            </div>
               <CNavbarBrand href="#">ToDo List</CNavbarBrand>
               <CNavbarNav className="d-flex me-auto mb-2 mb-lg-0">
                 <CNavItem>

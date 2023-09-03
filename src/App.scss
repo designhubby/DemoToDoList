@@ -1,3 +1,54 @@
+#root .navbar_iconcontainer{
+  display: flex;
+  box-sizing: border-box;
+  height: 3rem;
+  width: 3rem;
+  padding: 0;
+  justify-content: center;
+  align-items: center;
+  margin-right: 1rem;
+}
+
+#root .navbar_iconcontainer_floating{
+  position: absolute;
+  display: flex;
+  height: 3rem;
+  width: 3rem;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  border: 2px;
+  border-radius: 50px;
+  background-color: blueviolet;
+  transition: width 0.5s, border-radius 0.5s,  border 0.5s;
+  left: 10px;
+
+}
+#root .navbar_iconcontainer_floating.active{
+  width: 22rem;
+  border-bottom-left-radius: 0;
+  position:absolute;
+  left: 10px;
+  z-index: 1;
+
+}
+
+#root .navbar_icontext{
+  display: none;
+  color: transparent;
+  width: 0px;
+  transition: width 1s color 1s;
+  &.active{
+    display: inline;
+    margin-left: 1rem;
+    color: black;
+    width:max-content;
+  }
+
+}
+
+
+
 body{
   margin: 0;
   padding: 0;

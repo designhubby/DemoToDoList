@@ -248,7 +248,7 @@ export const Root:FC<IRootProps>= (props: IRootProps) =>{
 
     
       <>
-        <NavBarTop loggedIn = {isLoggedin} getToken = {authenticateGetToken} signOut={signOut} handleOnClick={handleOnClick} functionInject={rootFunctions}/>
+        <NavBarTop profileData = {formData} loggedIn = {isLoggedin} getToken = {authenticateGetToken} signOut={signOut} handleOnClick={handleOnClick} functionInject={rootFunctions}/>
         
         <Modal visible = {modalShow} title ="User Profile" functionInject={rootFunctions} handleOnClose = {cancelUserDataChange}>
             <Profile data-role='main'  profileData = {formData} func={rootFunctions} userNameReadOnly = {true}/>
