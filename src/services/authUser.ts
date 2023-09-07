@@ -9,7 +9,14 @@ export interface IWebUserLoginDto{
     password: string,
 }
 
-export async function WebLogin(webuserLoginDto: IWebUserLoginDto, axiosInstance :AxiosInstance = axios) {
+export interface WebAuthTokenResponse{
+    success: boolean,
+    token: string,
+    expiry: Date,
+    errors?: [],
+}
+
+export async function WebLogin(webuserLoginDto: IWebUserLoginDto, axiosInstance :AxiosInstance = axios):Promise<WebAuthTokenResponse> {
     const results = await axiosInstance.post(`${controllerURL}/Login`, webuserLoginDto, {
         //AxiosRequestConfig parameter
         withCredentials: true //correct
@@ -21,6 +28,8 @@ export async function WebLogin(webuserLoginDto: IWebUserLoginDto, axiosInstance 
 
   export async function IsLoggedInValid(axiosInstance :AxiosInstance = axios): Promise<boolean>{
     const results = await axiosInstance.post(`${controllerURL}/AuthenticationStatus`).then(response => response.data);
+    console.log(`IsLoggedInValid`)
+    console.log(results)
     return results;
   }
 

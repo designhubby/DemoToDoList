@@ -29,12 +29,20 @@ const TodoTask:FC<Props> = ({task, removeTask}: Props) => {
 
   return (
     <div className='task'>
-      <div className={`content ${styleOverdue()}`}>
-        <div>{task.taskName}</div>
-        <div className='task tasklinebreak'></div>
-        <div>Start:<br/> {task.startDate?.toLocaleDateString('en-US',dateOptions) }</div>
-        <div>Deadline: <br/>{task.deadline?.toLocaleDateString('en-US',dateOptions)}</div>
-        <div>Priority: <br/>{task.prioritylvl}</div>
+      <div className={`container content ${styleOverdue()}`}>
+        <div className='row'>
+          <div className='col task_title'>{task.taskName}</div>
+        </div>
+        <div className='row'>
+          <div className='col'>Start:</div>
+          <div className='col'>Due Date:</div>
+          <div className='col'>Priority</div>
+        </div>
+        <div className='row'>
+          <div className='col'>{task.startDate?.toLocaleDateString('en-US',dateOptions) }</div>
+          <div className='col'>{task.deadline?.toLocaleDateString('en-US',dateOptions)}</div>
+          <div className='col'>{task.prioritylvl}</div>
+        </div>
       </div>
       <button onClick={()=>removeTask(task.id)}>X</button>
     </div>

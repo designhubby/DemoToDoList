@@ -8,7 +8,7 @@ import { IProfileData, Profile } from './components/profile';
 import { GetUserData, PostUserData } from './services/dataUser';
 import { LocalGetAllToDoList, LocalPostAllToDoList } from './services/LocalDataToDoList';
 import { RemoteGetToDoListData, RemotePostToDoListData } from './services/RemotedataToDoList';
-import { EditUser, GetUser, IsLoggedInValid, IsLoginCookie, WebLogin, WebLogOut, WebRegister } from './services/authUser';
+import { EditUser, GetUser, IsLoggedInValid, IsLoginCookie, WebAuthTokenResponse, WebLogin, WebLogOut, WebRegister } from './services/authUser';
 import toast, { Toaster } from 'react-hot-toast';
 import { ModalSignedOut } from './components/modalSignedout';
 import { CButton } from '@coreui/react';
@@ -87,7 +87,7 @@ export const Root:FC<IRootProps>= (props: IRootProps) =>{
       console.log(tokenResult.success + " " + tokenResult.token);
       if(tokenResult.success && tokenResult.token){
         console.log("Set Token")
-        setToken(tokenResult.token);
+        setToken(tokenResult);
       }
     };
 
@@ -248,7 +248,7 @@ export const Root:FC<IRootProps>= (props: IRootProps) =>{
 
     
       <>
-        <NavBarTop profileData = {formData} loggedIn = {isLoggedin} getToken = {authenticateGetToken} signOut={signOut} handleOnClick={handleOnClick} functionInject={rootFunctions}/>
+        <NavBarTop profileData = {formData} loggedIn = {isLoggedin} getToken = {authenticateGetToken} token={token} signOut={signOut} handleOnClick={handleOnClick} functionInject={rootFunctions}/>
         
         <Modal visible = {modalShow} title ="User Profile" functionInject={rootFunctions} handleOnClose = {cancelUserDataChange}>
             <Profile data-role='main'  profileData = {formData} func={rootFunctions} userNameReadOnly = {true}/>

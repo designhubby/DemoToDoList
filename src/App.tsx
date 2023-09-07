@@ -9,7 +9,7 @@ import TaskInputForm from './components/TaskInputForm';
 import { ToDoList } from './components/ToDoList';
 import { DragDropContext, DropResult } from '@hello-pangea/dnd';
 import { LocalGetAllToDoList, LocalPostAllToDoList } from './services/LocalDataToDoList';
-import { IsLoginCookie, WebLogin } from './services/authUser';
+import { IsLoginCookie, WebAuthTokenResponse, WebLogin } from './services/authUser';
 import * as _ from "lodash";
 import { TpRootFunctions } from './components/interfaces/rootFunctions';
 
@@ -17,7 +17,7 @@ export interface IAppProps {
   dataAccess : ()=>Promise<IUserToDoLists>,
   dataPost: (todoData: ITaskInfoAll[])=>Promise<void>,
   signOut : ()=> void
-  forceRerender: string | null,
+  forceRerender: WebAuthTokenResponse | null,
   loggedin : boolean,
   handleTimedOutSignOut : ()=>void;
   functionInject: TpRootFunctions;

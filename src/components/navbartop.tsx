@@ -10,7 +10,7 @@ import { CNavLinkProps } from '@coreui/react/dist/components/nav/CNavLink';
 import Joi from 'joi';
 import toast from 'react-hot-toast';
 import { TpRootFunctions } from './interfaces/rootFunctions';
-import { IsLoggedInValid } from '../services/authUser';
+import { IsLoggedInValid, WebAuthTokenResponse } from '../services/authUser';
 import { IProfileData } from './profile';
 
 
@@ -18,6 +18,7 @@ import { IProfileData } from './profile';
 export interface INavBarTopProps {
     profileData: IProfileData,
     loggedIn: boolean,
+    token: WebAuthTokenResponse | null,
     getToken: (username: string, password: string) => Promise<void>,
     signOut: ()=>void,
     handleOnClick: (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement, MouseEvent>, id:string)=>void,
@@ -54,20 +55,29 @@ export function NavBarTop (props: INavBarTopProps) {
     const loggedInBootstrapIconClassName = 'bi bi-person-check'
     const loggedOutBootstrapIconClassName = 'bi bi-person-fill-slash'
 
-      useEffect(()=>{
-        async function fetchLoginState(){
-          const loginState = await IsLoggedInValid();
-          if(loginState){
-            setAvatarIconType(loggedInBootstrapIconClassName);
-          }else{
-            setAvatarIconType(loggedOutBootstrapIconClassName);
-          }
-        }
-      },[]);
-    
-    const showConsole = ()=>{
-      console.log("me clicked");
+    const fetchLoginState = async()=>{
+      const loginState = props.token;
+      if(loginState){
+        setAvatarUserName(`Welcome ${props.profileData.username}`);
+        setAvatarIconType(loggedInBootstrapIconClassName);
+      }else{
+        setAvatarUserName(`Guest Mode`);
+        setAvatarIconType(loggedOutBootstrapIconClassName);
+      }
     }
+
+      useEffect(()=>{
+
+        fetchLoginState();
+        
+      },[]);
+      useEffect(()=>{
+
+        console.log(`fetchLoginState`)
+        fetchLoginState();
+        
+      },[props.token]);
+      
 
     const onFieldChange = (e: ChangeEvent<HTMLInputElement>)=>{
       const {name, value}= e.target;
@@ -127,6 +137,7 @@ export function NavBarTop (props: INavBarTopProps) {
             //ran vlidation success
             try{
               const data = await props.getToken(userid, password); //if success validation
+              fetchLoginState();
             }catch(err){
               const error = err as IRemoteErrorDetails;
               console.log(error.data);
@@ -167,8 +178,8 @@ export function NavBarTop (props: INavBarTopProps) {
       ///true: Show - Network Icon : User Name 
       ///false: Show - Guest Icon : Guest Mode (mouse over modal: description)
       const username = props.profileData.username
-      
-      if(await IsLoggedInValid()){
+      const loggedinCheck = await IsLoggedInValid();
+      if(loggedinCheck){
         setAvatarUserName(`Welcome ${username}`);
         setAvatarIconType(loggedInBootstrapIconClassName);
 

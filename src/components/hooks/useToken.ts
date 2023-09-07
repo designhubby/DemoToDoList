@@ -1,23 +1,24 @@
 import { useState } from 'react';
+import { WebAuthTokenResponse } from '../../services/authUser';
 import { Nullable, IAuthOutput } from '../interfaces/interfaces';
 
 interface IUseToken{
-    setToken: (userToken: string | null)=>void;
-    token: string | null;
+    setToken: (userToken: WebAuthTokenResponse | null)=>void;
+    token: WebAuthTokenResponse | null;
 }
 
 
 
 export default function useToken(): IUseToken{
 
-    const getToken = (): string | null =>{
+    const getToken = (): WebAuthTokenResponse | null =>{
         const tokenString  = localStorage.getItem('token');
         const userToken = tokenString ? JSON.parse(tokenString, (key,value)=>  value == 'null' ? null : value) : null;
         return userToken
     }
-    const [token, setToken] = useState(getToken());
+    const [token, setToken] = useState<WebAuthTokenResponse |null>(getToken());
 
-    const saveToken = (userToken: string | null ) =>{
+    const saveToken = (userToken: WebAuthTokenResponse | null ) =>{
 
         localStorage.setItem('token', JSON.stringify(userToken));
         
