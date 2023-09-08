@@ -88,6 +88,7 @@ export const Root:FC<IRootProps>= (props: IRootProps) =>{
       if(tokenResult.success && tokenResult.token){
         console.log("Set Token")
         setToken(tokenResult);
+        getUserData();
       }
     };
 
@@ -237,12 +238,6 @@ export const Root:FC<IRootProps>= (props: IRootProps) =>{
         }
     },[token])
 
-    const handleOnTesth1 = async (e: React.MouseEvent<HTMLHeadingElement, MouseEvent>)=>{
-      console.log(`testing button`)
-      console.log(modalShowRegister)
-    
-    }
-//<Profile {...mockUserProfileData}/>
   return (
 
 

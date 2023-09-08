@@ -68,8 +68,22 @@ export function NavBarTop (props: INavBarTopProps) {
 
       useEffect(()=>{
 
+        const handleClickOutside = (event: MouseEvent)=>{
+          const navbarbar = document.querySelector('.navbar_whole') as HTMLElement;
+
+          if(navbarbar && !navbarbar.contains(event.target as Node)){
+            console.log('Clicked Outside of navbarbar');
+            setVisible(false)
+          }
+
+        }
+        document.addEventListener('click', handleClickOutside);
+
         fetchLoginState();
-        
+        return()=>{
+          document.removeEventListener('click', handleClickOutside);
+        }
+
       },[]);
       useEffect(()=>{
 
@@ -195,7 +209,7 @@ export function NavBarTop (props: INavBarTopProps) {
 
   return (
     <div>
-      <CNavbar expand="lg" colorScheme="light" className="bg-light">
+      <CNavbar expand="lg" colorScheme="light" className="navbar_whole bg-light">
           <CContainer fluid>
             <CNavbarToggler
               aria-label="Toggle navigation"
