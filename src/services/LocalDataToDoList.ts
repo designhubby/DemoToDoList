@@ -5,7 +5,7 @@ import { ITaskInfoAll, IUserToDoLists } from "../Interfaces"
 export const LocalGetAllToDoList = async() :Promise<IUserToDoLists> =>{
     let localtasks : Promise<IUserToDoLists> = new Promise((resolve,reject)=>{
         setTimeout(()=>{
-            const saved : ITaskInfoAll[]= JSON.parse(localStorage.getItem("ToDoList") ?? "");
+            const saved : ITaskInfoAll[]= localStorage.getItem("ToDoList") ? JSON.parse(localStorage.getItem("ToDoList")?? "") : "";
             const localdata = {
                 applicationUserId : 'guest',
                 toDoListData : saved,
