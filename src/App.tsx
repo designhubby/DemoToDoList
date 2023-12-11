@@ -43,13 +43,14 @@ const App: FC<IAppProps> = (props: IAppProps)=> {
           console.log(`run fetchToDoList TRUETHY branch`)
           let  initialToDoList:ITaskInfoAll[];
           initialToDoList = fetchedToDoList.toDoListData;
-          initialToDoList.forEach(indiv=>{
-            indiv.startDate = indiv.startDate ? new Date(indiv.startDate ) : null;
-            indiv.deadline = indiv.deadline ? new Date(indiv.deadline ) : null;
-          })
+          if(initialToDoList.length > 0) {
+            initialToDoList.forEach(indiv=>{
+              indiv.startDate = indiv.startDate ? new Date(indiv.startDate ) : null;
+              indiv.deadline = indiv.deadline ? new Date(indiv.deadline ) : null;
+            })}
           
           
-          const changes = !_.isEqual(todoList, fetchedToDoList);
+          const changes = !_.isEqual(todoList, fetchedToDoList.toDoListData);
           if(changes){
 
             setTodoList(initialToDoList)
@@ -78,7 +79,7 @@ const App: FC<IAppProps> = (props: IAppProps)=> {
       return
     }
 
-    if(todoList.length>0 ){
+   
       const isEqual = _.isEqual(todoList, todoListOri);
       if(!isEqual){
         console.log("running runPost")
@@ -89,7 +90,6 @@ const App: FC<IAppProps> = (props: IAppProps)=> {
         console.log("not running runPost")
       }
       
-    }
 
     
   }, [todoList]);
@@ -187,7 +187,7 @@ const App: FC<IAppProps> = (props: IAppProps)=> {
 
   const removeTask = (id:number) :void=>{
     const newTodoList = todoList.filter((indiv)=>indiv.id !== id);
-    setTodoList(newTodoList);
+    setTodoList(newTodoList)
     toast.success('Successfully Deleted');
   }
   const onDragEnd = (result: DropResult )=>{
@@ -234,15 +234,15 @@ setCookie('isLoggedIn', 'true');
         <DragDropContext onDragEnd={onDragEnd}>
           <div className = "todoList">
             <div className="todoList-priority">High</div>
-            <ToDoList id={"High"} ToDoListArray={todoList} removeTask={removeTask} setTodoList={setTodoList} filter = {taskPriorityLevel.High}/>
+            {todoList.length>0 && <ToDoList id={"High"} ToDoListArray={todoList} removeTask={removeTask} setTodoList={setTodoList} filter = {taskPriorityLevel.High}/>}
           </div>
           <div className = "todoList">
             <div className="todoList-priority">Medium</div>
-            <ToDoList id={"Med"} ToDoListArray={todoList} removeTask={removeTask} setTodoList={setTodoList} filter = {taskPriorityLevel.Medium}/>
+            {todoList.length>0 && <ToDoList id={"Med"} ToDoListArray={todoList} removeTask={removeTask} setTodoList={setTodoList} filter = {taskPriorityLevel.Medium}/>}
           </div>
           <div className = "todoList">
             <div className="todoList-priority">Low</div>
-            <ToDoList id={"Low"} ToDoListArray={todoList} removeTask={removeTask} setTodoList={setTodoList} filter = {taskPriorityLevel.Low}/>
+            {todoList.length>0 && <ToDoList id={"Low"} ToDoListArray={todoList} removeTask={removeTask} setTodoList={setTodoList} filter = {taskPriorityLevel.Low}/>}
           </div>
         </DragDropContext>
       </div>
