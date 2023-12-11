@@ -50,7 +50,7 @@ const TaskInputForm:FC<ITaskInputFormProps> = ({currAllTaskInfo, handleChangeAll
           name = {InputFieldName.prioritylvl}
           enumVariable ={taskPriorityLevel}/>
       </div>
-      <button onClick={addTask}> Add Task</button>
+      <button className='appbtn' onClick={addTask}> Add Task</button>
       </div>
     </>
     

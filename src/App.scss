@@ -99,7 +99,7 @@ body{
   border: 1px solid grey;
 }
 
-.header button{
+.header .appbtn{
   width: 70px;
   height: 160px;
   border: none;
@@ -199,7 +199,7 @@ body{
   & .content.content-overdue{
       background-color: tomato;
   }
-  & button{
+  & .appbtn{
     flex: 10%;
     height: 110px;
     border-bottom-right-radius: 1rem;

@@ -44,7 +44,7 @@ const TodoTask:FC<Props> = ({task, removeTask}: Props) => {
           <div className='col'>{task.prioritylvl}</div>
         </div>
       </div>
-      <button onClick={()=>removeTask(task.id)}>X</button>
+      <button className='appbtn' onClick={()=>removeTask(task.id)}>X</button>
     </div>
   );
 }
